@@ -42,8 +42,12 @@ fn diff21(n: i32) -> i32 {
 // nearHundred(89) → false
 
 fn near_hundred(n: i32) -> bool {
-    // ((n - 100).abs() <= 10) || ((n - 200).abs() <= 10) // this works too
-    (n >= 90) & (n <= 110) || (n >= 190) & (n <= 210)
+
+    fn near_n(center: i32, n: i32) -> bool {
+        (center - n).abs() <= 10
+    }
+
+    near_n(100, n) || near_n(200, n)
 }
 
 // Warmup-1 > missingChar
@@ -121,7 +125,7 @@ fn has_teen(a: i32, b: i32, c: i32) -> bool {
 // mix_start("piz snacks") → false
 
 fn mix_start(s: &str) -> bool {
-    &s[1..3] == "ix"
+    &s[1..=2] == "ix"
 }
 // Warmup-1 > close10
 // https://codingbat.com/prob/p172021
