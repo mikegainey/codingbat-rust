@@ -42,12 +42,67 @@ fn double_x(s: &str) -> bool {
 // last2("xaxxaxaxx") → 1
 // last2("axxxaaxx") → 2
 
-fn last2(s: &str) -> u32 {
+fn last2a(s: &str) -> u32 {
     let len = s.len();
     let substring = &s[len-2..];
     let search_string = &s[..len-2];
-    0
+
+    let mut count = 0;
+    for x in 0..=search_string.len()-2 {
+        if &search_string[x..x+2] == substring {
+            count += 1
+        }
+    }
+    count
 }
+
+fn last2b(s: &str) -> u32 {
+    let len = s.len();
+    let substring = &s[len-2..];
+    let search_string = &s[..len-2];
+
+    fn substring_count(search_string: &str, substring: &str) -> u32 {
+        if search_string.len() < 2 {
+            0
+        } else {
+            if &search_string[0..2] == substring {
+                1 + substring_count(&search_string[1..], &substring)
+            } else {
+                0 + substring_count(&search_string[1..], &substring)
+            }
+        }
+    }
+
+    substring_count(&search_string, &substring)
+}
+
+// Warmup-2 > array123
+// https://codingbat.com/prob/p136041
+
+// Given an array of ints, return true if the sequence of numbers 1, 2, 3 appears in the array somewhere.
+
+// array123([1, 1, 2, 3, 1]) → true
+// array123([1, 1, 2, 4, 1]) → false
+// array123([1, 1, 2, 1, 2, 3]) → true
+
+fn array123a(a: Vec<i32>) -> bool {
+    let len = a.len();
+    for x in 0..=len-3 {
+        if &a[x..x+3] == &[1,2,3] {
+            return true
+        }
+    }
+    false
+}
+
+fn array123b(a: &Vec<i32>) -> bool {
+    if a.len() < 3 {
+        return false
+    } else {
+        return (&a[0..3] == &[1,2,3]) || array123b(&a[1..])
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -69,8 +124,25 @@ mod tests {
 
     #[test]
     fn last2_test() {
-        assert_eq!(last2("hixxhi"), 1);
-        assert_eq!(last2("xaxxaxaxx"), 1);
-        assert_eq!(last2("axxxaaxx"), 2);
+        assert_eq!(last2a("hixxhi"), 1);
+        assert_eq!(last2a("xaxxaxaxx"), 1);
+        assert_eq!(last2a("axxxaaxx"), 2);
+        assert_eq!(last2a("michmiaemimi"), 3);
+        assert_eq!(last2b("hixxhi"), 1);
+        assert_eq!(last2b("xaxxaxaxx"), 1);
+        assert_eq!(last2b("axxxaaxx"), 2);
+        assert_eq!(last2b("michmiaemimi"), 3);
+    }
+
+    #[test]
+    fn array123_test() {
+        assert_eq!(array123a(vec![1, 1, 2, 3, 1]), true);
+        assert_eq!(array123a(vec![1, 1, 2, 4, 1]), false);
+        assert_eq!(array123a(vec![1, 1, 2, 1, 2, 3]), true);
+        assert_eq!(array123a(vec![1, 2, 3, 1, 2, 4]), true);
+        // assert_eq!(array123b(vec![1, 1, 2, 3, 1]), true);
+        // assert_eq!(array123b(vec![1, 1, 2, 4, 1]), false);
+        // assert_eq!(array123b(vec![1, 1, 2, 1, 2, 3]), true);
+        // assert_eq!(array123b(vec![1, 2, 3, 1, 2, 4]), true);
     }
 }

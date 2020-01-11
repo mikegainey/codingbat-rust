@@ -1,25 +1,25 @@
 #![allow(dead_code)]
 
 fn main() {
-    println!("{}", end_up("michael"));
+    println!("{}", last2("mimimiaemimi"));
 }
 
-fn missing_char(s: &str, n: usize) -> String {
-    let take = &s[..n].to_string();
-    let drop = &s[n+1..].to_string();
-    format!("{}{}", take, drop)
-}
-
-fn end_up(s: &str) -> String {
+fn last2(s: &str) -> u32 {
     let len = s.len();
-    let firstx = if len < 3 {
-        0
-    } else {
-        len - 3
-    };
+    let substring = &s[len-2..];
+    let search_string = &s[..len-2];
 
-    let front = s[..firstx].to_string();
-    let back = s[firstx..].to_uppercase().to_string();
+    fn count2(search_string: &str, substring: &str) -> u32 {
+        if search_string.len() < 2 {
+            0
+        } else {
+            if &search_string[0..2] == substring {
+                1 + count2(&search_string[1..], &substring)
+            } else {
+                0 + count2(&search_string[1..], &substring)
+            }
+        }
+    }
 
-    format!("{}{}", front, back)
+    count2(&search_string, &substring)
 }
