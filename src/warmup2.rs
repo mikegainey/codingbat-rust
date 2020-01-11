@@ -47,6 +47,7 @@ fn last2a(s: &str) -> u32 {
     let substring = &s[len-2..];
     let search_string = &s[..len-2];
 
+    // with a for loop
     let mut count = 0;
     for x in 0..=search_string.len()-2 {
         if &search_string[x..x+2] == substring {
@@ -61,6 +62,7 @@ fn last2b(s: &str) -> u32 {
     let substring = &s[len-2..];
     let search_string = &s[..len-2];
 
+    // with a recursive helper function
     fn substring_count(search_string: &str, substring: &str) -> u32 {
         if search_string.len() < 2 {
             0
@@ -85,7 +87,7 @@ fn last2b(s: &str) -> u32 {
 // array123([1, 1, 2, 4, 1]) → false
 // array123([1, 1, 2, 1, 2, 3]) → true
 
-fn array123a(a: Vec<i32>) -> bool {
+fn array123a(a: &[i32]) -> bool {
     let len = a.len();
     for x in 0..=len-3 {
         if &a[x..x+3] == &[1,2,3] {
@@ -95,7 +97,7 @@ fn array123a(a: Vec<i32>) -> bool {
     false
 }
 
-fn array123b(a: &Vec<i32>) -> bool {
+fn array123b(a: &[i32]) -> bool {
     if a.len() < 3 {
         return false
     } else {
@@ -103,6 +105,136 @@ fn array123b(a: &Vec<i32>) -> bool {
     }
 }
 
+// Warmup-2 > altPairs
+// https://codingbat.com/prob/p121596
+
+// Given a string, return a string made of the chars at indexes 0,1, 4,5, 8,9 ... so "kittens" yields "kien".
+
+// alt_pairs("kitten") → "kien"
+// alt_pairs("Chocolate") → "Chole"
+// alt_pairs("CodingHorror") → "Congrr"
+
+// with recursion
+fn alt_pairs1(s: &str) -> String {
+    if s.len() <= 2 {
+        s.to_string()
+    } else if s.len() <= 4 {
+        format!("{}", &s[..2])
+    } else {
+        format!("{}{}", &s[..2], alt_pairs1(&s[4..]))
+    }
+}
+
+// with iteration, pushing to accumulate an output variable
+fn alt_pairs2(s: &str) -> String {
+    let mut output = String::new();
+    let mut mod4x;
+    for (x, c) in s.chars().enumerate() {
+        mod4x = x % 4;
+        if mod4x == 0 || mod4x == 1 {
+            output.push(c);
+        }
+    }
+    output
+}
+
+// nice!  the rusty way with iterator adaptors
+fn alt_pairs3(s: &str) -> String {
+    s.chars()
+        .enumerate()
+        .filter(|(x,_)| x % 4 == 0 || x % 4 == 1)
+        .map(|(_,c)| c)
+        .collect::<String>()
+}
+
+// Warmup-2 > noTriples
+// https://codingbat.com/prob/p170221
+
+// Given an array of ints, we'll say that a triple is a value appearing 3 times in a row in the array.
+// Return true if the array does not contain any triples.
+
+// no_triples([1, 1, 2, 2, 1]) → true
+// no_triples([1, 1, 2, 2, 2, 1]) → false
+// no_triples([1, 1, 1, 2, 2, 2, 1]) → false
+
+fn no_triples1(a: &[i32]) -> bool {
+    let len = a.len();
+    for x in 0..=len-3 {
+        if a[x] == a[x+1] && a[x] == a[x+2] {
+            return false
+        }
+    }
+    true
+}
+
+fn no_triples2(a: &[i32]) -> bool {
+    if a.len() < 3 {
+        true
+    } else {
+        let no_triple = !(a[0] == a[1] && a[0] == a[2]);
+        no_triple && no_triples2(&a[1..])
+    }
+}
+
+// Warmup-2 > frontTimes
+// https://codingbat.com/prob/p101475
+
+// Given a string and a non-negative int n, // we'll say that the front of the string is the first 3 chars,
+// or whatever is there if the string is less than length 3.
+// Return n copies of the front;
+
+// front_times("Chocolate", 2) → "ChoCho"
+// front_times("Chocolate", 3) → "ChoChoCho"
+// front_times("Abc", 3) → "AbcAbcAbc"
+
+fn front_times(s: &str, n: usize) -> String {
+    use std::cmp;
+
+    let lastx = cmp::min(3, s.len());
+    let front = &s[..lastx];
+
+    front.repeat(n)
+}
+
+// Warmup-2 > stringBits
+// https://codingbat.com/prob/p165666
+
+// Given a string, return a new string made of every other char starting with the first, so "Hello" yields "Hlo".
+
+// string_bits("Hello") → "Hlo"
+// string_bits("Hi") → "H"
+// string_bits("Heeololeo") → "Hello"
+
+fn string_bits(s: &str) -> String {
+    s.chars()
+        .step_by(2)
+        .collect::<String>()
+}
+
+// Warmup-2 > arrayCount9
+// https://codingbat.com/prob/p184031
+
+// Given an array of ints, return the number of 9's in the array.
+
+// array_count9([1, 2, 9]) → 1
+// array_count9([1, 9, 9]) → 2
+// array_count9([1, 9, 9, 3, 9]) → 3
+
+fn array_count9a(a: &[i32]) -> usize {
+    a.iter()
+        .filter(|&x| x == &9)
+        .count()
+}
+
+fn array_count9b(a: &[i32]) -> usize {
+    let mut count = 0;
+    for x in a.iter() {
+        if x == &9 {
+            count += 1;
+        }
+    }
+    count
+}
 
 #[cfg(test)]
 mod tests {
@@ -136,13 +268,60 @@ mod tests {
 
     #[test]
     fn array123_test() {
-        assert_eq!(array123a(vec![1, 1, 2, 3, 1]), true);
-        assert_eq!(array123a(vec![1, 1, 2, 4, 1]), false);
-        assert_eq!(array123a(vec![1, 1, 2, 1, 2, 3]), true);
-        assert_eq!(array123a(vec![1, 2, 3, 1, 2, 4]), true);
-        // assert_eq!(array123b(vec![1, 1, 2, 3, 1]), true);
-        // assert_eq!(array123b(vec![1, 1, 2, 4, 1]), false);
-        // assert_eq!(array123b(vec![1, 1, 2, 1, 2, 3]), true);
-        // assert_eq!(array123b(vec![1, 2, 3, 1, 2, 4]), true);
+        assert_eq!(array123a(&[1, 1, 2, 3, 1]), true);
+        assert_eq!(array123a(&[1, 1, 2, 4, 1]), false);
+        assert_eq!(array123a(&[1, 1, 2, 1, 2, 3]), true);
+        assert_eq!(array123a(&[1, 2, 3, 1, 2, 4]), true);
+        assert_eq!(array123b(&[1, 1, 2, 3, 1]), true);
+        assert_eq!(array123b(&[1, 1, 2, 4, 1]), false);
+        assert_eq!(array123b(&[1, 1, 2, 1, 2, 3]), true);
+        assert_eq!(array123b(&[1, 2, 3, 1, 2, 4]), true);
+    }
+
+    #[test]
+    fn alt_pairs_test() {
+        assert_eq!(alt_pairs1("kitten"), "kien");
+        assert_eq!(alt_pairs1("Chocolate"), "Chole");
+        assert_eq!(alt_pairs1("CodingHorror"), "Congrr");
+        assert_eq!(alt_pairs2("kitten"), "kien");
+        assert_eq!(alt_pairs2("Chocolate"), "Chole");
+        assert_eq!(alt_pairs2("CodingHorror"), "Congrr");
+        assert_eq!(alt_pairs3("kitten"), "kien");
+        assert_eq!(alt_pairs3("Chocolate"), "Chole");
+        assert_eq!(alt_pairs3("CodingHorror"), "Congrr");
+    }
+
+    #[test]
+    fn no_triples_test() {
+        assert_eq!(no_triples1(&[1, 1, 2, 2, 1]), true);
+        assert_eq!(no_triples1(&[1, 1, 2, 2, 2, 1]), false);
+        assert_eq!(no_triples1(&[1, 1, 1, 2, 2, 2, 1]), false);
+        assert_eq!(no_triples2(&[1, 1, 2, 2, 1]), true);
+        assert_eq!(no_triples2(&[1, 1, 2, 2, 2, 1]), false);
+        assert_eq!(no_triples2(&[1, 1, 1, 2, 2, 2, 1]), false);
+    }
+
+    #[test]
+    fn front_times_test() {
+        assert_eq!(front_times("Chocolate", 2), "ChoCho");
+        assert_eq!(front_times("Chocolate", 3), "ChoChoCho");
+        assert_eq!(front_times("Abc", 3), "AbcAbcAbc");
+    }
+
+    #[test]
+    fn string_bits_test() {
+        assert_eq!(string_bits("Hello"), "Hlo");
+        assert_eq!(string_bits("Hi"), "H");
+        assert_eq!(string_bits("Heeololeo"), "Hello");
+    }
+
+    #[test]
+    fn array_count9_test() {
+        assert_eq!(array_count9a(&[1, 2, 9]), 1);
+        assert_eq!(array_count9a(&[1, 9, 9]), 2);
+        assert_eq!(array_count9a(&[1, 9, 9, 3, 9]), 3);
+        assert_eq!(array_count9b(&[1, 2, 9]), 1);
+        assert_eq!(array_count9b(&[1, 9, 9]), 2);
+        assert_eq!(array_count9b(&[1, 9, 9, 3, 9]), 3);
     }
 }
