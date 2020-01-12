@@ -105,6 +105,16 @@ fn array123b(a: &[i32]) -> bool {
     }
 }
 
+fn array123c(a: &[i32]) -> bool {
+    let len = a.len();
+    let count123 = (0..=len-3)
+        .map(|x| (a[x], a[x+1], a[x+2]))
+        .filter(|&x| x == (1,2,3))
+        .count();
+
+    count123 >= 1
+}
+
 // Warmup-2 > altPairs
 // https://codingbat.com/prob/p121596
 
@@ -138,7 +148,7 @@ fn alt_pairs2(s: &str) -> String {
     output
 }
 
-// nice!  the rusty way with iterator adaptors
+// with iterator adaptors
 fn alt_pairs3(s: &str) -> String {
     s.chars()
         .enumerate()
@@ -179,7 +189,7 @@ fn no_triples2(a: &[i32]) -> bool {
 // Warmup-2 > frontTimes
 // https://codingbat.com/prob/p101475
 
-// Given a string and a non-negative int n, // we'll say that the front of the string is the first 3 chars,
+// Given a string and a non-negative int n, we'll say that the front of the string is the first 3 chars,
 // or whatever is there if the string is less than length 3.
 // Return n copies of the front;
 
@@ -236,6 +246,43 @@ fn array_count9b(a: &[i32]) -> usize {
     count
 }
 
+// Warmup-2 > stringMatch
+// https://codingbat.com/prob/p198640
+
+// Given 2 strings, a and b, return the number of the positions where they contain the same length 2 substring.
+// So "xxcaazz" and "xxbaaz" yields 3, since the "xx", "aa", and "az" substrings appear in the same place in both strings.
+
+// string_match("xxcaazz", "xxbaaz") → 3
+// string_match("abc", "abc") → 2
+// string_match("abc", "axc") → 0
+
+fn string_match(a: &str, b: &str) -> u32 {
+    use std::cmp;
+
+    let mut count = 0;
+    let len = cmp::min(a.len(), b.len());
+    for x in 0..=len-2 {
+        if &a[x..=x+1] == &b[x..=x+1] {
+            count += 1;
+        }
+    }
+    count
+}
+
+// Warmup-2 > stringYak
+// https://codingbat.com/prob/p126212
+
+// Suppose the string "yak" is unlucky. Given a string, return a version where all the "yak" are removed,
+// but the "a" can be any char. The "yak" strings will not overlap.
+
+// string_yak("yakpak") → "pak"
+// string_yak("pakyak") → "pak"
+// string_yak("yak123ya") → "123ya"
+
+fn string_yak(s: &str) -> String {
+    s.to_string()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -276,6 +323,10 @@ mod tests {
         assert_eq!(array123b(&[1, 1, 2, 4, 1]), false);
         assert_eq!(array123b(&[1, 1, 2, 1, 2, 3]), true);
         assert_eq!(array123b(&[1, 2, 3, 1, 2, 4]), true);
+        assert_eq!(array123c(&[1, 1, 2, 3, 1]), true);
+        assert_eq!(array123c(&[1, 1, 2, 4, 1]), false);
+        assert_eq!(array123c(&[1, 1, 2, 1, 2, 3]), true);
+        assert_eq!(array123c(&[1, 2, 3, 1, 2, 4]), true);
     }
 
     #[test]
@@ -323,5 +374,19 @@ mod tests {
         assert_eq!(array_count9b(&[1, 2, 9]), 1);
         assert_eq!(array_count9b(&[1, 9, 9]), 2);
         assert_eq!(array_count9b(&[1, 9, 9, 3, 9]), 3);
+    }
+
+    #[test]
+    fn string_match_test() {
+        assert_eq!(string_match("xxcaazz", "xxbaaz"), 3);
+        assert_eq!(string_match("abc", "abc"), 2);
+        assert_eq!(string_match("abc", "axc"), 0);
+    }
+
+    #[test]
+    fn string_yak_test() {
+        assert_eq!(string_yak("yakpak"), "pak");
+        assert_eq!(string_yak("pakyak"), "pak");
+        assert_eq!(string_yak("yak123ya"), "123ya");
     }
 }
