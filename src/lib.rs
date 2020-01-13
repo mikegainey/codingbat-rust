@@ -2,4 +2,5 @@
 
 mod warmup1;
 mod warmup2;
+mod array1;
 mod array2;

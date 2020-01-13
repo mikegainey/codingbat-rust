@@ -279,8 +279,159 @@ fn string_match(a: &str, b: &str) -> u32 {
 // string_yak("pakyak") → "pak"
 // string_yak("yak123ya") → "123ya"
 
-fn string_yak(s: &str) -> String {
-    s.to_string()
+fn string_yak1(s: &str) -> String {
+
+    fn is_yak(s: &str) -> bool {
+        let s_bytes = s.as_bytes();
+        s_bytes[0] == b'y' && s_bytes[2] == b'k'
+    }
+
+    if s.len() < 3 {
+        s.to_string()
+    } else {
+        if is_yak(&s[0..3]) {
+            format!("{}", string_yak1(&s[3..]))
+        } else {
+            format!("{}{}", &s[0..1], string_yak1(&s[1..]))
+        }
+    }
+}
+
+fn string_yak2(s: &str) -> String {
+    use regex::Regex;
+    let yak_re = Regex::new(r"^y.k").unwrap();
+
+    if s.len() < 3 {
+        s.to_string()
+    } else if yak_re.is_match(&s[..3]) {
+        string_yak2(&s[3..])
+    } else {
+        format!("{}{}", &s[..1], string_yak2(&s[1..]))
+    }
+}
+
+// Warmup-2 > has271
+// https://codingbat.com/prob/p167430
+
+// Given an array of ints, return true if it contains a 2, 7, 1 pattern:
+// a value, followed by the value plus 5, followed by the value minus 1.
+// Additionally the 271 counts even if the "1" differs by 2 or less from the correct value.
+
+// has271([1, 2, 7, 1]) → true
+// has271([1, 2, 8, 1]) → false
+// has271([2, 7, 1]) → true
+
+fn has271(a: &[i32]) -> bool {
+    if a.len() < 3 {
+        false
+    } else {
+        let ab = (a[1] - a[0]) == 5;
+        let ac1 = a[2] - a[0]; // allowed to be -1 (+/- 2)
+        let ac2 = ac1 >= -3 && ac1 <= 1;
+        if ab && ac2 {
+            true
+        } else {
+            has271(&a[1..])
+        }
+    }
+}
+
+// Warmup-2 > countXX
+// https://codingbat.com/prob/p194667
+
+// Count the number of "xx" in the given string. We'll say that overlapping is allowed, so "xxx" contains 2 "xx".
+
+// count_xx("abcxx") → 1
+// count_xx("xxx") → 2
+// count_xx("xxxx") → 3
+
+fn count_xx(s: &str) -> u32 {
+    if s.len() < 2 {
+        0
+    } else if &s[..2] == "xx" {
+        1 + count_xx(&s[1..])
+    } else {
+        0 + count_xx(&s[1..])
+    }
+}
+
+// Warmup-2 > stringSplosion
+// https://codingbat.com/prob/p117334
+
+// Given a non-empty string like "Code" return a string like "CCoCodCode".
+
+// string_splosion("Code") → "CCoCodCode"
+// string_splosion("abc") → "aababc"
+// string_splosion("ab") → "aab"
+
+fn string_splosion(s: &str) -> String {
+    let mut output = String::new();
+    for len in 1..=s.len() {
+        output.push_str(&s[..len]);
+    }
+    output
+}
+
+// Warmup-2 > arrayFront9
+// https://codingbat.com/prob/p186031
+
+// Given an array of ints, return true if one of the first 4 elements in the array is a 9.
+// The array length may be less than 4.
+
+// array_front9([1, 2, 9, 3, 4]) → true
+// array_front9([1, 2, 3, 4, 9]) → false
+// array_front9([1, 2, 3, 4, 5]) → false
+
+fn array_front9(a: &[i32]) -> bool {
+    use std::cmp;
+
+    let lastx = cmp::min(a.len(), 4);
+    let a = &a[..lastx];
+
+    let count9 = a.iter()
+        .filter(|&x| x == &9)
+        .count();
+    count9 >= 1
+}
+
+// Warmup-2 > stringX
+// https://codingbat.com/prob/p171260
+
+// Given a string, return a version where all the "x" have been removed.
+// Except an "x" at the very start or end should not be removed.
+
+// string_x("xxHxix") → "xHix"
+// string_x("abxxxcd") → "abcd"
+// string_x("xabxxxcdx") → "xabcdx"
+
+fn string_x(s: &str) -> String {
+    let len = s.len();
+    let first = &s[..1];
+    let last = &s[len-1..];
+    let middle = &s[1..len-1].chars()
+        .filter(|&c| c != 'x')
+        .collect::<String>();
+    format!("{}{}{}", first, middle, last)
+}
+
+// Warmup-2 > array667
+// https://codingbat.com/prob/p110019
+
+// Given an array of ints, return the number of times that two 6's are next to each other in the array.
+// Also count instances where the second "6" is actually a 7.
+
+// array667([6, 6, 2]) → 1
+// array667([6, 6, 2, 6]) → 1
+// array667([6, 7, 2, 6]) → 1
+
+fn array667(a: &[i32]) -> u32 {
+    if a.len() < 2 {
+        0
+    } else if a[0] == 6 && (a[1] == 6 || a[1] == 7) {
+        1 + array667(&a[1..])
+    } else {
+        0 + array667(&a[1..])
+    }
 }
 
 #[cfg(test)]
@@ -385,8 +536,62 @@ mod tests {
 
     #[test]
     fn string_yak_test() {
-        assert_eq!(string_yak("yakpak"), "pak");
-        assert_eq!(string_yak("pakyak"), "pak");
-        assert_eq!(string_yak("yak123ya"), "123ya");
+        assert_eq!(string_yak1("yakpak"), "pak");
+        assert_eq!(string_yak1("pakyak"), "pak");
+        assert_eq!(string_yak1("yak123ya"), "123ya");
+        assert_eq!(string_yak1("ayakpak"), "apak"); // yak starting at the 2nd character
+        assert_eq!(string_yak2("yakpak"), "pak");
+        assert_eq!(string_yak2("pakyak"), "pak");
+        assert_eq!(string_yak2("yak123ya"), "123ya");
+        assert_eq!(string_yak2("ayakpak"), "apak"); // yak starting at the 2nd character
+    }
+
+    #[test]
+    fn has271_test() {
+        assert_eq!(has271(&[1, 2, 7, 1]), true);
+        assert_eq!(has271(&[1, 2, 8, 1]), false);
+        assert_eq!(has271(&[2, 7, 1]), true);
+        assert_eq!(has271(&[3, 8, 2]), true);
+        assert_eq!(has271(&[3, 8, 3]), true);
+        assert_eq!(has271(&[3, 8, 4]), true);
+        assert_eq!(has271(&[3, 8, 5]), false);
+        assert_eq!(has271(&[3, 8, 1]), true);
+        assert_eq!(has271(&[3, 8, 0]), true);
+        assert_eq!(has271(&[4, 9, 0]), false);
+    }
+
+    #[test]
+    fn count_xx_test() {
+        assert_eq!(count_xx("abcxx"), 1);
+        assert_eq!(count_xx("xxx"), 2);
+        assert_eq!(count_xx("xxxx"), 3);
+    }
+
+    #[test]
+    fn string_splosion_test() {
+        assert_eq!(string_splosion("Code"), "CCoCodCode");
+        assert_eq!(string_splosion("abc"), "aababc");
+        assert_eq!(string_splosion("ab"), "aab");
+    }
+
+    #[test]
+    fn array_front9_test() {
+        assert_eq!(array_front9(&[1, 2, 9, 3, 4]), true);
+        assert_eq!(array_front9(&[1, 2, 3, 4, 9]), false);
+        assert_eq!(array_front9(&[1, 2, 3, 4, 5]), false);
+    }
+
+    #[test]
+    fn string_x_test() {
+        assert_eq!(string_x("xxHxix"), "xHix");
+        assert_eq!(string_x("abxxxcd"), "abcd");
+        assert_eq!(string_x("xabxxxcdx"), "xabcdx");
+    }
+
+    #[test]
+    fn array667_test() {
+        assert_eq!(array667(&[6, 6, 2]), 1);
+        assert_eq!(array667(&[6, 6, 2, 6]), 1);
+        assert_eq!(array667(&[6, 7, 2, 6]), 1);
     }
 }

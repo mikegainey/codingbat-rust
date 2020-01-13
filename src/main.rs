@@ -12,18 +12,3 @@
 
 fn main() {
 }
-
-fn string_yak(s: &str) -> String {
-    s.to_string()
-}
-
-fn is_yak(s: &str) -> bool {
-    if s.len() < 3 {
-        return false
-    }
-    let mut s_chars = s.chars();
-    let y = s_chars.next().unwrap() == 'y';
-    s_chars.next();
-    let k = s_chars.next().unwrap() == 'k';
-    y && k
-}
