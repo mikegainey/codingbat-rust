@@ -245,10 +245,11 @@ fn make_ends(a: &[i32]) -> [i32; 2] {
 // make_last([3]) → [0, 3]
 
 fn make_last(a: &[i32]) -> &[i32] {
-    let len = a.len();
-    let mut output = [0; len * 2];
-    output[(len*2)-1] = a[len-1];
-    output
+    // let len = a.len();
+    // let mut output = Vec::new();
+    // output.push(a[len-1]);
+    // &output
+    [1,2,3]
 }
 
 #[cfg(test)]
