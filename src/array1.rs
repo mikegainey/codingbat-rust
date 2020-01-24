@@ -244,12 +244,39 @@ fn make_ends(a: &[i32]) -> [i32; 2] {
 // make_last([1, 2]) → [0, 0, 0, 2]
 // make_last([3]) → [0, 3]
 
-fn make_last(a: &[i32]) -> &[i32] {
-    // let len = a.len();
-    // let mut output = Vec::new();
-    // output.push(a[len-1]);
-    // &output
-    [1,2,3]
+fn make_last(a: &[i32]) -> Vec<i32> {
+    let len = a.len();
+    let mut output = Vec::new();
+    for _ in 0..(2 * len - 1) {
+        output.push(0);
+    }
+    output.push(a[len-1]);
+    output
+}
+
+// Array-1 > start1
+// https://codingbat.com/prob/p109660
+
+// Start with 2 int arrays, a and b, of any length. Return how many of the arrays have 1 as their first element.
+
+// start1([1, 2, 3], [1, 3]) → 2
+// start1([7, 2, 3], [1]) → 1
+// start1([1, 2], []) → 1
+
+fn start1(a: &[i32], b: &[i32]) -> i32 {
+
+    fn helper(a: &[i32]) -> i32 {
+        if a.len() > 0 && a[0] == 1 {
+            1
+        } else {
+            0
+        }
+    }
+
+    let mut output = 0;
+    output += helper(&a);
+    output += helper(&b);
+    output
 }
 
 #[cfg(test)]
@@ -359,5 +386,12 @@ mod tests {
         assert_eq!(make_last(&[4, 5, 6]), [0, 0, 0, 0, 0, 6]);
         assert_eq!(make_last(&[1, 2]), [0, 0, 0, 2]);
         assert_eq!(make_last(&[3]), [0, 3]);
+    }
+
+    #[test]
+    fn start1_test() {
+        assert_eq!(start1(&[1, 2, 3], &[1, 3]), 2);
+        assert_eq!(start1(&[7, 2, 3], &[1]), 1);
+        assert_eq!(start1(&[1, 2], &[]), 1);
     }
 }
