@@ -4,4 +4,5 @@
 #![allow(unused_imports)]
 
 fn main() {
+    println!("{}", 5 / 2);
 }

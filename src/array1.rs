@@ -279,6 +279,177 @@ fn start1(a: &[i32], b: &[i32]) -> i32 {
     output
 }
 
+// Array-1 > plusTwo
+// https://codingbat.com/prob/p180840
+
+// Given 2 int arrays, each length 2, return a new array length 4 containing all their elements.
+
+// plus_two([1, 2], [3, 4]) → [1, 2, 3, 4]
+// plus_two([4, 4], [2, 2]) → [4, 4, 2, 2]
+// plus_two([9, 2], [3, 4]) → [9, 2, 3, 4]
+
+fn plus_two(a: &[i32], b: &[i32]) -> Vec<i32> {
+    [a, b].concat() // https://doc.rust-lang.org/std/primitive.slice.html#method.concat
+}
+
+// Array-1 > maxTriple
+// https://codingbat.com/prob/p185176
+
+// Given an array of ints of odd length, look at the first, last, and middle values in the array and return the largest.
+// The array length will be a least 1.
+
+// max_triple([1, 2, 3]) → 3
+// max_triple([1, 5, 3]) → 5
+// max_triple([5, 2, 3]) → 5
+
+fn max_triple(a: &[i32]) -> i32 {
+    use std::cmp;
+
+    let len = a.len();
+    let first = a[0];
+    let last = a[len-1];
+    let middle = a[len / 2];
+
+    let max_first_middle = cmp::max(first, middle);
+    cmp::max(max_first_middle, last)
+}
+
+// Array-1 > make2
+// https://codingbat.com/prob/p143461
+
+// Given 2 int arrays, a and b,
+// return a new array length 2 containing, as much as will fit, the elements from a followed by the elements from b.
+// The arrays may be any length, including 0, but there will be 2 or more elements available between the 2 arrays.
+
+// make2([4, 5], [1, 2, 3]) → [4, 5]
+// make2([4], [1, 2, 3]) → [4, 1]
+// make2([], [1, 2]) → [1, 2]
+
+fn make2(a: &[i32], b: &[i32]) -> Vec<i32> {
+    let ab = [a, b].concat();
+    ab[..2].to_vec()
+}
+
+// Array-1 > makePi
+// https://codingbat.com/prob/p167011
+
+// Return an int array length 3 containing the first 3 digits of pi, {3, 1, 4}.
+
+// make_pi() → [3, 1, 4]
+
+fn make_pi() -> [i32; 3] {
+    [3, 1, 4]
+}
+
+// Array-1 > rotateLeft3
+// https://codingbat.com/prob/p185139
+
+// Given an array of ints length 3, return an array with the elements "rotated left" so {1, 2, 3} yields {2, 3, 1}.
+
+// rotate_left3([1, 2, 3]) → [2, 3, 1]
+// rotate_left3([5, 11, 9]) → [11, 9, 5]
+// rotate_left3([7, 0, 0]) → [0, 0, 7]
+
+fn rotate_left3(a: &[i32]) -> [i32; 3] {
+    [a[1], a[2], a[0]]
+}
+
+// Array-1 > sum2
+// https://codingbat.com/prob/p190968
+
+// Given an array of ints, return the sum of the first 2 elements in the array.
+// If the array length is less than 2, just sum up the elements that exist, returning 0 if the array is length 0.
+
+// sum2([1, 2, 3]) → 3
+// sum2([1, 1]) → 2
+// sum2([1, 1, 1, 1]) → 2
+
+fn sum2(a: &[i32]) -> i32 {
+    let len = a.len();
+    if len >= 2 {
+        a[0] + a[1]
+    } else if len == 1 {
+        a[0]
+    } else {
+        0
+    }
+}
+
+// Array-1 > has23
+// https://codingbat.com/prob/p171022
+
+// Given an int array length 2, return true if it contains a 2 or a 3.
+
+// has23([2, 5]) → true
+// has23([4, 3]) → true
+// has23([4, 5]) → false
+
+fn has23(a: &[i32]) -> bool {
+
+    fn is2or3(a: i32) -> bool {
+        a == 2 || a == 3
+    }
+
+    is2or3(a[0]) || is2or3(a[1])
+}
+
+// Array-1 > double23
+// https://codingbat.com/prob/p145365
+
+// Given an int array, return true if the array contains 2 twice, or 3 twice. The array will be length 0, 1, or 2.
+
+// double23([2, 2]) → true
+// double23([3, 3]) → true
+// double23([2, 3]) → false
+
+fn double23(a: &[i32]) -> bool {
+    if a.len() == 2 {
+        a == [2, 2] || a == [3, 3]
+    } else {
+        false
+    }
+}
+
+// Array-1 > biggerTwo
+// https://codingbat.com/prob/p109537
+
+// Start with 2 int arrays, a and b, each length 2. Consider the sum of the values in each array.
+// Return the array which has the largest sum. In event of a tie, return a.
+
+// bigger_two([1, 2], [3, 4]) → [3, 4]
+// bigger_two([3, 4], [1, 2]) → [3, 4]
+// bigger_two([1, 1], [1, 2]) → [1, 2]
+
+fn bigger_two(a: &[i32], b: &[i32]) -> [i32; 2] {
+    use std::convert::TryInto;
+
+    assert_eq!(a.len(), 2); // an invariant in the problem statement
+    assert_eq!(b.len(), 2);
+
+    let suma = a[0] + a[1];
+    let sumb = b[0] + b[1];
+    if suma >= sumb {
+        a.try_into().unwrap()
+    } else {
+        b.try_into().unwrap()
+    }
+}
+
+// Array-1 > swapEnds
+// https://codingbat.com/prob/p118044
+
+// Given an array of ints, swap the first and last elements in the array. Return the modified array.
+// The array length will be at least 1.
+
+// swap_ends([1, 2, 3, 4]) → [4, 2, 3, 1]
+// swap_ends([1, 2, 3]) → [3, 2, 1]
+// swap_ends([8, 6, 7, 9, 5]) → [5, 6, 7, 9, 8]
+
+fn swap_ends(a: [i32]) -> Vec<i32> {
+    let len = a.len();
+    [1,2,3].to_vec()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -393,5 +564,73 @@ mod tests {
         assert_eq!(start1(&[1, 2, 3], &[1, 3]), 2);
         assert_eq!(start1(&[7, 2, 3], &[1]), 1);
         assert_eq!(start1(&[1, 2], &[]), 1);
+    }
+
+    #[test]
+    fn plus_two_test() {
+        assert_eq!(plus_two(&[1, 2], &[3, 4]), [1, 2, 3, 4]);
+        assert_eq!(plus_two(&[4, 4], &[2, 2]), [4, 4, 2, 2]);
+        assert_eq!(plus_two(&[9, 2], &[3, 4]), [9, 2, 3, 4]);
+    }
+
+    #[test]
+    fn max_triple_test() {
+        assert_eq!(max_triple(&[1, 2, 3]), 3);
+        assert_eq!(max_triple(&[1, 5, 3]), 5);
+        assert_eq!(max_triple(&[5, 2, 3]), 5);
+    }
+
+    #[test]
+    fn make2_test() {
+        assert_eq!(make2(&[4, 5], &[1, 2, 3]), [4, 5]);
+        assert_eq!(make2(&[4], &[1, 2, 3]), [4, 1]);
+        assert_eq!(make2(&[], &[1, 2]), [1, 2]);
+    }
+
+    #[test]
+    fn make_pi_test() {
+        assert_eq!(make_pi(), [3, 1, 4]);
+    }
+
+    #[test]
+    fn rotate_left3_test() {
+        assert_eq!(rotate_left3(&[1, 2, 3]), [2, 3, 1]);
+        assert_eq!(rotate_left3(&[5, 11, 9]), [11, 9, 5]);
+        assert_eq!(rotate_left3(&[7, 0, 0]), [0, 0, 7]);
+    }
+
+    #[test]
+    fn sum2_test() {
+        assert_eq!(sum2(&[1, 2, 3]), 3);
+        assert_eq!(sum2(&[1, 1]), 2);
+        assert_eq!(sum2(&[1, 1, 1, 1]), 2);
+    }
+
+    #[test]
+    fn has23_test() {
+        assert_eq!(has23(&[2, 5]), true);
+        assert_eq!(has23(&[4, 3]), true);
+        assert_eq!(has23(&[4, 5]), false);
+    }
+
+    #[test]
+    fn double23_test() {
+        assert_eq!(double23(&[2, 2]), true);
+        assert_eq!(double23(&[3, 3]), true);
+        assert_eq!(double23(&[2, 3]), false);
+    }
+
+    #[test]
+    fn bigger_two_test() {
+        assert_eq!(bigger_two(&[1, 2], &[3, 4]), [3, 4]);
+        assert_eq!(bigger_two(&[3, 4], &[1, 2]), [3, 4]);
+        assert_eq!(bigger_two(&[1, 1], &[1, 2]), [1, 2]);
+    }
+
+    #[test]
+    fn swap_ends_test() {
+    assert_eq!(swap_ends(&[1, 2, 3, 4]), [4, 2, 3, 1]);
+    assert_eq!(swap_ends(&[1, 2, 3]), [3, 2, 1]);
+    assert_eq!(swap_ends(&[8, 6, 7, 9, 5]), [5, 6, 7, 9, 8]);
     }
 }
