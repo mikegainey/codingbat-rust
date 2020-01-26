@@ -445,9 +445,55 @@ fn bigger_two(a: &[i32], b: &[i32]) -> [i32; 2] {
 // swap_ends([1, 2, 3]) → [3, 2, 1]
 // swap_ends([8, 6, 7, 9, 5]) → [5, 6, 7, 9, 8]
 
-fn swap_ends(a: [i32]) -> Vec<i32> {
+fn swap_ends(a: &mut [i32]) -> &[i32] {
+    let lastx = a.len() - 1;
+    let swap_var = a[0];
+    a[0] = a[lastx];
+    a[lastx] = swap_var;
+    a
+}
+
+// Array-1 > frontPiece
+// https://codingbat.com/prob/p142455
+
+// Given an int array of any length, return a new array of its first 2 elements.
+// If the array is smaller than length 2, use whatever elements are present.
+
+// front_piece([1, 2, 3]) → [1, 2]
+// front_piece([1, 2]) → [1, 2]
+// front_piece([1]) → [1]
+
+fn front_piece(a: &[i32]) -> Vec<i32> {
     let len = a.len();
-    [1,2,3].to_vec()
+    if len >= 2 {
+        a[..2].to_vec()
+    } else {
+        a.to_vec()
+    }
+}
+
+// Array-1 > front11
+// https://codingbat.com/prob/p128270
+
+// Given 2 int arrays, a and b, of any length, return a new array with the first element of each array.
+// If either array is length 0, ignore that array.
+
+// front11([1, 2, 3], [7, 9, 8]) → [1, 7]
+// front11([1], [2]) → [1, 2]
+// front11([1, 7], []) → [1]
+
+fn front11(a: &[i32], b: &[i32]) -> Vec<i32> {
+    let lena = a.len();
+    let lenb = b.len();
+    if lena > 0 && lenb > 0 {
+        [a[0], b[0]].to_vec()
+    } else if lena == 0 {
+        [b[0]].to_vec()
+    } else if lenb == 0 {
+        [a[0]].to_vec()
+    } else {
+        [].to_vec()
+    }
 }
 
 #[cfg(test)]
@@ -629,8 +675,22 @@ mod tests {
 
     #[test]
     fn swap_ends_test() {
-    assert_eq!(swap_ends(&[1, 2, 3, 4]), [4, 2, 3, 1]);
-    assert_eq!(swap_ends(&[1, 2, 3]), [3, 2, 1]);
-    assert_eq!(swap_ends(&[8, 6, 7, 9, 5]), [5, 6, 7, 9, 8]);
+    assert_eq!(swap_ends(&mut [1, 2, 3, 4]), [4, 2, 3, 1]);
+    assert_eq!(swap_ends(&mut [1, 2, 3]), [3, 2, 1]);
+    assert_eq!(swap_ends(&mut [8, 6, 7, 9, 5]), [5, 6, 7, 9, 8]);
+    }
+
+    #[test]
+    fn front_piece_test() {
+        assert_eq!(front_piece(&[1, 2, 3]), [1, 2]);
+        assert_eq!(front_piece(&[1, 2]), [1, 2]);
+        assert_eq!(front_piece(&[1]), [1]);
+    }
+
+    #[test]
+    fn front11_test() {
+        assert_eq!(front11(&[1, 2, 3], &[7, 9, 8]), [1, 7]);
+        assert_eq!(front11(&[1], &[2]), [1, 2]);
+        assert_eq!(front11(&[1, 7], &[]), [1]);
     }
 }
