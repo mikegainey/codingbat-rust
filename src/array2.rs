@@ -63,4 +63,5 @@ mod tests {
         assert!(more14(&[1, 4, 1, 4]) == false);
         assert!(more14(&[1, 1]) == true);
     }
+
 }
