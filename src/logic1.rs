@@ -151,6 +151,180 @@ fn last_digit(a: u32, b: u32, c: u32) -> bool {
     a_ones == b_ones || a_ones == c_ones || b_ones == c_ones
 }
 
+// Logic-1 > maxMod5
+// https://codingbat.com/prob/p115384
+
+// Given two int values, return whichever value is larger.
+// However if the two values have the same remainder when divided by 5, then the return the smaller value.
+// However, in all cases, if the two values are the same, return 0.
+// Note: the % "mod" operator computes the remainder, e.g. 7 % 5 is 2.
+
+// max_mod5(2, 3) → 3
+// max_mod5(6, 2) → 6
+// max_mod5(3, 2) → 3
+
+fn max_mod5(a: i32, b: i32) -> i32 {
+    use std::cmp;
+
+    if a == b {
+        0
+    } else if a % 5 == b % 5 {
+        cmp::min(a, b)
+    } else {
+        cmp::max(a, b)
+    }
+}
+
+// Logic-1 > blueTicket
+// https://codingbat.com/prob/p192267
+
+// You have a blue lottery ticket, with ints a, b, and c on it. This makes three pairs, which we'll call ab, bc, and ac.
+// Consider the sum of the numbers in each pair. If any pair sums to exactly 10, the result is 10.
+// Otherwise if the ab sum is exactly 10 more than either bc or ac sums, the result is 5.
+// Otherwise the result is 0.
+
+// blue_ticket(9, 1, 0) → 10
+// blue_ticket(9, 2, 0) → 0
+// blue_ticket(6, 1, 4) → 10
+
+fn blue_ticket(a: i32, b: i32, c: i32) -> i32 {
+    let ab = a + b;
+    let bc = b + c;
+    let ac = a + c;
+    if ab == 10 || bc == 10 || ac == 10 {
+        10
+    } else if ab == bc + 10 || ab == ac + 10 {
+        5
+    } else {
+        0
+    }
+}
+
+// Logic-1 > dateFashion
+// https://codingbat.com/prob/p103360
+
+// You and your date are trying to get a table at a restaurant.
+// The parameter "you" is the stylishness of your clothes, in the range 0..10,
+// and "date" is the stylishness of your date's clothes.
+// The result getting the table is encoded as an int value with 0=no, 1=maybe, 2=yes.
+// If either of you is very stylish, 8 or more, then the result is 2 (yes).
+// With the exception that if either of you has style of 2 or less, then the result is 0 (no).
+// Otherwise the result is 1 (maybe).
+
+// date_fashion(5, 10) → 2
+// date_fashion(5, 2) → 0
+// date_fashion(5, 5) → 1
+
+fn date_fashion(you: u8, date: u8) -> u8 {
+    if you <= 2 || date <= 2 {
+        0
+    } else if you >= 8 || date >= 8 {
+        2
+    } else {
+        1
+    }
+}
+
+// Logic-1 > sortaSum
+// https://codingbat.com/prob/p183071
+
+// Given 2 ints, a and b, return their sum.
+// However, sums in the range 10..19 inclusive, are forbidden, so in that case just return 20.
+
+// sorta_sum(3, 4) → 7
+// sorta_sum(9, 4) → 20
+// sorta_sum(10, 11) → 21
+
+fn sorta_sum(a: i32, b: i32) -> i32 {
+    let sum = a + b;
+    if sum >= 10 && sum <= 19 {
+        20
+    } else {
+        sum
+    }
+}
+
+// Logic-1 > in1To10
+// https://codingbat.com/prob/p137365
+
+// Given a number n, return true if n is in the range 1..10, inclusive.
+// Unless outsideMode is true, in which case return true if the number is less or equal to 1, or greater or equal to 10.
+
+// in_1to10(5, false) → true
+// in_1to10(11, false) → false
+// in_1to10(11, true) → true
+
+fn in_1to10(n: i32, outside_mode: bool) -> bool {
+    if outside_mode {
+        n <= 1 || n >= 10
+    } else {
+        n >= 1 && n <= 10
+    }
+}
+
+// Logic-1 > old35
+// https://codingbat.com/prob/p159612
+
+// Return true if the given non-negative number is a multiple of 3 or 5, but not both.
+// Use the % "mod" operator -- see Introduction to Mod
+
+// old35(3) → true
+// old35(10) → true
+// old35(15) → false
+
+fn old35(n: u32) -> bool {
+    (n % 3 == 0) != (n % 5 == 0)
+}
+
+// Logic-1 > teenSum
+// https://codingbat.com/prob/p178728
+
+// Given 2 ints, a and b, return their sum. However, "teen" values in the range 13..19 inclusive, are extra lucky.
+// So if either value is a teen, just return 19.
+
+// teen_sum(3, 4) → 7
+// teen_sum(10, 13) → 19
+// teen_sum(13, 2) → 19
+
+fn teen_sum(a: i32, b: i32) -> i32 {
+
+    fn is_teen(a: i32) -> bool {
+        a >= 13 && a <= 19
+    }
+
+    if is_teen(a) || is_teen(b) {
+        19
+    } else {
+        a + b
+    }
+}
+
+// Logic-1 > fizzString
+// https://codingbat.com/prob/p137136
+
+// Given a string str, if the string starts with "f" return "Fizz".
+// If the string ends with "b" return "Buzz".
+// If both the "f" and "b" conditions are true, return "FizzBuzz".
+// In all other cases, return the string unchanged. (See also: FizzBuzz Code)
+
+// fizz_string("fig") → "Fizz"
+// fizz_string("dib") → "Buzz"
+// fizz_string("fib") → "FizzBuzz"
+
+fn fizz_string(s: &str) -> String {
+    let bs = s.as_bytes(); // this is nice: turn the string into bytes, then no more pain
+    let end = bs.len() - 1;
+    if bs[0] == b'f' && bs[end] == b'b' {
+        "FizzBuzz".to_string()
+    } else if bs[0] == b'f' {
+        "Fizz".to_string()
+    } else if bs[end] == b'b' {
+        "Buzz".to_string()
+    } else {
+        s.to_string()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -212,5 +386,60 @@ mod tests {
         assert_eq!(last_digit(23, 19, 13), true);
         assert_eq!(last_digit(23, 19, 12), false);
         assert_eq!(last_digit(23, 19, 3), true);
+    }
+
+    #[test]
+    fn max_mod5_test() {
+        assert_eq!(max_mod5(2, 3), 3);
+        assert_eq!(max_mod5(6, 2), 6);
+        assert_eq!(max_mod5(3, 2), 3);
+    }
+
+    #[test]
+    fn blue_ticket_test() {
+        assert_eq!(blue_ticket(9, 1, 0), 10);
+        assert_eq!(blue_ticket(9, 2, 0), 0);
+        assert_eq!(blue_ticket(6, 1, 4), 10);
+    }
+
+    #[test]
+    fn date_fashion_test() {
+        assert_eq!(date_fashion(5, 10), 2);
+        assert_eq!(date_fashion(5, 2), 0);
+        assert_eq!(date_fashion(5, 5), 1);
+    }
+
+    #[test]
+    fn sorta_sum_test() {
+        assert_eq!(sorta_sum(3, 4), 7);
+        assert_eq!(sorta_sum(9, 4), 20);
+        assert_eq!(sorta_sum(10, 11), 21);
+    }
+    #[test]
+    fn in_1to10_test() {
+        assert_eq!(in_1to10(5, false), true);
+        assert_eq!(in_1to10(11, false), false);
+        assert_eq!(in_1to10(11, true), true);
+    }
+
+    #[test]
+    fn old35_test() {
+        assert_eq!(old35(3), true);
+        assert_eq!(old35(10), true);
+        assert_eq!(old35(15), false);
+    }
+
+    #[test]
+    fn teen_sum_test() {
+        assert_eq!(teen_sum(3, 4), 7);
+        assert_eq!(teen_sum(10, 13), 19);
+        assert_eq!(teen_sum(13, 2), 19);
+    }
+
+    #[test]
+    fn fizz_string_test() {
+        assert_eq!(fizz_string("fig"), "Fizz");
+        assert_eq!(fizz_string("dib"), "Buzz");
+        assert_eq!(fizz_string("fib"), "FizzBuzz");
     }
 }
