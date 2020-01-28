@@ -414,6 +414,44 @@ fn share_digit(a: i32, b: i32) -> bool {
     }
 }
 
+fn share_digit2(a: i32, b: i32) -> bool {
+    let mut va = Vec::new();
+    let mut vb = Vec::new();
+    va.push(a / 10);
+    va.push(a % 10);
+    vb.push(b / 10);
+    vb.push(b % 10);
+    let mut match_found = false;
+    for x in &va {
+        for y in &vb {
+            if x == y {
+                match_found = true;
+            }
+        }
+    }
+    match_found
+}
+
+// Logic-1 > squirrelPlay
+// https://codingbat.com/prob/p141061
+
+// The squirrels in Palo Alto spend most of the day playing.
+// In particular, they play if the temperature is between 60 and 90 (inclusive).
+// Unless it is summer, then the upper limit is 100 instead of 90.
+// Given an int temperature and a boolean isSummer, return true if the squirrels play and false otherwise.
+
+// squirrel_play(70, false) → true
+// squirrel_play(95, false) → false
+// squirrel_play(95, true) → true
+
+fn squirrel_play(temp: i32, is_summer: bool) -> bool {
+    if is_summer {
+        temp >= 60 && temp <= 100
+    } else {
+        temp >= 60 && temp <= 90 // not summer
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -560,5 +598,19 @@ mod tests {
         assert_eq!(share_digit(12, 23), true);
         assert_eq!(share_digit(12, 43), false);
         assert_eq!(share_digit(12, 44), false);
+    }
+
+    #[test]
+    fn share_digit2_test() {
+        assert_eq!(share_digit2(12, 23), true);
+        assert_eq!(share_digit2(12, 43), false);
+        assert_eq!(share_digit2(12, 44), false);
+    }
+
+    #[test]
+    fn squirrel_play_test() {
+        assert_eq!(squirrel_play(70, false), true);
+        assert_eq!(squirrel_play(95, false), false);
+        assert_eq!(squirrel_play(95, true), true);
     }
 }
