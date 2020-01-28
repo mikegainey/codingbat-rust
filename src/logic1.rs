@@ -325,6 +325,95 @@ fn fizz_string(s: &str) -> String {
     }
 }
 
+// Logic-1 > inOrder
+// https://codingbat.com/prob/p154188
+
+// Given three ints, a b c, return true if b is greater than a, and c is greater than b.
+// However, with the exception that if "bOk" is true, b does not need to be greater than a.
+
+// in_order(1, 2, 4, false) → true
+// in_order(1, 2, 1, false) → false
+// in_order(1, 1, 2, true) → true
+
+fn in_order(a: i32, b: i32, c: i32, b_ok: bool) -> bool {
+    if !(c > b) {
+        return false;
+    }
+    if b_ok {
+        return true;
+    } else {
+        b > a
+    }
+}
+
+// Logic-1 > lessBy10
+// https://codingbat.com/prob/p179196
+
+// Given three ints, a b c, return true if one of them is 10 or more less than one of the others.
+
+// less_by_10(1, 7, 11) → true
+// less_by_10(1, 7, 10) → false
+// less_by_10(11, 1, 7) → true
+
+fn less_by_10(a: i32, b: i32, c: i32) -> bool {
+    use std::cmp;
+
+    let min = cmp::min(cmp::min(a, b), c);
+    let max = cmp::max(cmp::max(a, b), c);
+
+    max - min >= 10
+}
+
+// Logic-1 > redTicket
+// https://codingbat.com/prob/p170833
+
+// You have a red lottery ticket showing ints a, b, and c, each of which is 0, 1, or 2.
+// If they are all the value 2, the result is 10.
+// Otherwise if they are all the same, the result is 5.
+// Otherwise so long as both b and c are different from a, the result is 1.
+// Otherwise the result is 0.
+
+// red_ticket(2, 2, 2) → 10
+// red_ticket(2, 2, 1) → 0
+// red_ticket(0, 0, 0) → 5
+
+fn red_ticket(a: i32, b: i32, c: i32) -> i32 {
+    if a == 2 && b == 2 && c == 2 {
+        10
+    } else if a == b && b == c {
+        5
+    } else if b != a && c != a {
+        1
+    } else {
+        0
+    }
+}
+
+// Logic-1 > shareDigit
+// https://codingbat.com/prob/p153748
+
+// Given two ints, each in the range 10..99,
+// return true if there is a digit that appears in both numbers, such as the 2 in 12 and 23.
+// (Note: division, e.g. n/10, gives the left digit while the % "mod" n%10 gives the right digit.)
+
+// share_digit(12, 23) → true
+// share_digit(12, 43) → false
+// share_digit(12, 44) → false
+
+fn share_digit(a: i32, b: i32) -> bool {
+    if a % 10 == b % 10 {
+        return true;
+    } else if a % 10 == b / 10 {
+        return true;
+    } else if a / 10 == b % 10 {
+        return true;
+    } else if a / 10 == b / 10 {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -441,5 +530,35 @@ mod tests {
         assert_eq!(fizz_string("fig"), "Fizz");
         assert_eq!(fizz_string("dib"), "Buzz");
         assert_eq!(fizz_string("fib"), "FizzBuzz");
+    }
+
+    #[test]
+    fn in_order_test() {
+        assert_eq!(in_order(1, 2, 4, false), true);
+        assert_eq!(in_order(1, 2, 1, false), false);
+        assert_eq!(in_order(1, 1, 2, true), true);
+        assert_eq!(in_order(1, 1, 2, false), false);
+    }
+
+    #[test]
+    fn less_by_10_test() {
+        assert_eq!(less_by_10(1, 7, 11), true);
+        assert_eq!(less_by_10(1, 7, 10), false);
+        assert_eq!(less_by_10(11, 1, 7), true);
+    }
+
+    #[test]
+    fn red_ticket_test() {
+        assert_eq!(red_ticket(2, 2, 2), 10);
+        assert_eq!(red_ticket(2, 2, 1), 0);
+        assert_eq!(red_ticket(0, 0, 0), 5);
+        assert_eq!(red_ticket(2, 3, 1), 1);
+    }
+
+    #[test]
+    fn share_digit_test() {
+        assert_eq!(share_digit(12, 23), true);
+        assert_eq!(share_digit(12, 43), false);
+        assert_eq!(share_digit(12, 44), false);
     }
 }
