@@ -452,6 +452,35 @@ fn squirrel_play(temp: i32, is_summer: bool) -> bool {
     }
 }
 
+// Logic-1 > alarmClock
+// https://codingbat.com/prob/p160543
+
+// Given a day of the week encoded as 0=Sun, 1=Mon, 2=Tue, ...6=Sat,
+// and a boolean indicating if we are on vacation,
+// return a string of the form "7:00" indicating when the alarm clock should ring.
+// Weekdays, the alarm should be "7:00" and on the weekend it should be "10:00".
+// Unless we are on vacation -- then on weekdays it should be "10:00" and weekends it should be "off".
+
+// alarm_clock(1, false) → "7:00"
+// alarm_clock(5, false) → "7:00"
+// alarm_clock(0, false) → "10:00"
+
+fn alarm_clock(day: i32, vacation: bool) -> String {
+    if vacation {
+        if day >= 1 && day <= 5 {
+            return "10:00".to_string();
+        } else { // weekend
+            return "off".to_string();
+        }
+    } else { // not on vacation
+        if day >= 1 && day <= 5 {
+            return "7:00".to_string();
+        } else { // weekend
+            return "10:00".to_string();
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -612,5 +641,12 @@ mod tests {
         assert_eq!(squirrel_play(70, false), true);
         assert_eq!(squirrel_play(95, false), false);
         assert_eq!(squirrel_play(95, true), true);
+    }
+
+    #[test]
+    fn alarm_clock_test() {
+        assert_eq!(alarm_clock(1, false), "7:00");
+        assert_eq!(alarm_clock(5, false), "7:00");
+        assert_eq!(alarm_clock(0, false), "10:00");
     }
 }
