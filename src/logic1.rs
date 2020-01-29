@@ -402,15 +402,15 @@ fn red_ticket(a: i32, b: i32, c: i32) -> i32 {
 
 fn share_digit(a: i32, b: i32) -> bool {
     if a % 10 == b % 10 {
-        return true;
+        true
     } else if a % 10 == b / 10 {
-        return true;
+        true
     } else if a / 10 == b % 10 {
-        return true;
+        true
     } else if a / 10 == b / 10 {
-        return true;
+        true
     } else {
-        return false;
+        false
     }
 }
 
@@ -468,17 +468,176 @@ fn squirrel_play(temp: i32, is_summer: bool) -> bool {
 fn alarm_clock(day: i32, vacation: bool) -> String {
     if vacation {
         if day >= 1 && day <= 5 {
-            return "10:00".to_string();
+            "10:00".to_string()
         } else { // weekend
-            return "off".to_string();
+            "off".to_string()
         }
     } else { // not on vacation
         if day >= 1 && day <= 5 {
-            return "7:00".to_string();
+            "7:00".to_string()
         } else { // weekend
-            return "10:00".to_string();
+            "10:00".to_string()
         }
     }
+}
+
+// Logic-1 > specialEleven
+// https://codingbat.com/prob/p100962
+
+// We'll say a number is special if it is a multiple of 11 or if it is one more than a multiple of 11.
+// Return true if the given non-negative number is special. Use the % "mod" operator -- see Introduction to Mod
+
+// special_eleven(22) → true
+// special_eleven(23) → true
+// special_eleven(24) → false
+
+fn special_eleven(n: u32) -> bool {
+    n % 11 == 0 || n % 11 == 1
+}
+
+// Logic-1 > less20
+// https://codingbat.com/prob/p133158
+
+// Return true if the given non-negative number is 1 or 2 less than a multiple of 20.
+// So for example 38 and 39 return true, but 40 returns false. See also: Introduction to Mod
+
+// less20(18) → true
+// less20(19) → true
+// less20(20) → false
+
+fn less20(n: u32) -> bool {
+    n % 20 == 19 || n % 20 == 18
+}
+
+// Logic-1 > answerCell
+// https://codingbat.com/prob/p110973
+
+// Your cell phone rings. Return true if you should answer it.
+// Normally you answer, except in the morning you only answer if it is your mom calling.
+// In all cases, if you are asleep, you do not answer.
+
+// answer_cell(false, false, false) → true
+// answer_cell(false, false, true) → false
+// answer_cell(true, false, false) → false
+
+fn answer_cell(is_morning: bool, is_mom: bool, is_asleep: bool) -> bool {
+    if is_asleep {
+        false
+    } else if is_morning && !is_mom {
+        false
+    } else {
+        true
+    }
+}
+
+// Logic-1 > fizzString2
+// https://codingbat.com/prob/p115243
+
+// Given an int n, return the string form of the number followed by "!". So the int 6 yields "6!".
+// Except if the number is divisible by 3 use "Fizz" instead of the number,
+// and if the number is divisible by 5 use "Buzz",
+// and if divisible by both 3 and 5, use "FizzBuzz".
+
+// fizz_string2(1) → "1!"
+// fizz_string2(2) → "2!"
+// fizz_string2(3) → "Fizz"
+
+fn fizz_string2(n: i32) -> String {
+    if n % 3 == 0 && n % 5 == 0 {
+        "FizzBuzz".to_string()
+    } else if n % 3 == 0 {
+        "Fizz".to_string()
+    } else if n % 5 == 0 {
+        "Buzz".to_string()
+    } else {
+        format!("{}!", n)
+    }
+}
+
+// Logic-1 > inOrderEqual
+// https://codingbat.com/prob/p140272
+
+// Given three ints, a b c, return true if they are in strict increasing order,
+// such as 2 5 11, or 5 6 7, but not 6 5 7 or 5 5 7.
+// However, with the exception that if "equalOk" is true, equality is allowed, such as 5 5 7 or 5 5 5.
+
+// in_order_equal(2, 5, 11, false) → true
+// in_order_equal(5, 7, 6, false) → false
+// in_order_equal(5, 5, 7, true) → true
+
+fn in_order_equal(a: i32, b: i32, c: i32, equal_ok: bool) -> bool {
+    if equal_ok {
+        a <= b && b <= c
+    } else {
+        a < b && b < c
+    }
+}
+
+// Logic-1 > withoutDoubles
+// https://codingbat.com/prob/p115233
+
+// Return the sum of two 6-sided dice rolls, each in the range 1..6.
+// However, if noDoubles is true, if the two dice show the same value, increment one die to the next value,
+// wrapping around to 1 if its value was 6.
+
+// without_doubles(2, 3, true) → 5
+// without_doubles(3, 3, true) → 7
+// without_doubles(3, 3, false) → 6
+
+fn without_doubles(die1: u8, mut die2: u8, no_doubles: bool) -> u8 {
+    if no_doubles && die1 == die2 {
+        die2 += 1;
+        if die2 == 7 {
+            die2 = 1
+        }
+        return die1 + die2;
+    } else {
+        return die1 + die2;
+    }
+}
+
+// Logic-1 > greenTicket
+// https://codingbat.com/prob/p120633
+
+// You have a green lottery ticket, with ints a, b, and c on it.
+// If the numbers are all different from each other, the result is 0.
+// If all of the numbers are the same, the result is 20.
+// If two of the numbers are the same, the result is 10.
+
+// green_ticket(1, 2, 3) → 0
+// green_ticket(2, 2, 2) → 20
+// green_ticket(1, 1, 2) → 10
+
+fn green_ticket(a: i32, b: i32, c: i32) -> i32 {
+    if a == b && b == c {
+        20
+    } else if a == b || b == c || a == c {
+        10
+    } else {
+        0
+    }
+}
+
+// Logic-1 > sumLimit
+// https://codingbat.com/prob/p118077
+
+// Given 2 non-negative ints, a and b, return their sum, so long as the sum has the same number of digits as a.
+// If the sum has more digits than a, just return a without b.
+
+// sum_limit(2, 3) → 5
+// sum_limit(8, 3) → 8
+// sum_limit(8, 1) → 9
+
+fn sum_limit(a: u32, b: u32) -> u32 {
+    let len_a = a.to_string().len();
+    let sum = a + b;
+    let len_sum = sum.to_string().len();
+    if len_sum == len_a {
+        sum
+    } else {
+        a
+    }
+
 }
 
 #[cfg(test)]
@@ -648,5 +807,65 @@ mod tests {
         assert_eq!(alarm_clock(1, false), "7:00");
         assert_eq!(alarm_clock(5, false), "7:00");
         assert_eq!(alarm_clock(0, false), "10:00");
+    }
+
+    #[test]
+    fn special_eleven_test() {
+        assert_eq!(special_eleven(22), true);
+        assert_eq!(special_eleven(23), true);
+        assert_eq!(special_eleven(24), false);
+    }
+
+    #[test]
+    fn less20_test() {
+        assert_eq!(less20(18), true);
+        assert_eq!(less20(19), true);
+        assert_eq!(less20(20), false);
+    }
+
+    #[test]
+    fn answer_cell_test() {
+        assert_eq!(answer_cell(false, false, false), true);
+        assert_eq!(answer_cell(false, false, true), false);
+        assert_eq!(answer_cell(true, false, false), false);
+    }
+
+    #[test]
+    fn fizz_string2_test() {
+        assert_eq!(fizz_string2(1), "1!");
+        assert_eq!(fizz_string2(2), "2!");
+        assert_eq!(fizz_string2(3), "Fizz");
+    }
+
+    #[test]
+    fn in_order_equal_test() {
+        assert_eq!(in_order_equal(2, 5, 11, false), true);
+        assert_eq!(in_order_equal(5, 7, 6, false), false);
+        assert_eq!(in_order_equal(5, 5, 7, true), true);
+    }
+
+    #[test]
+    fn without_doubles_test() {
+        assert_eq!(without_doubles(2, 3, true), 5);
+        assert_eq!(without_doubles(3, 3, true), 7);
+        assert_eq!(without_doubles(3, 3, false), 6);
+        assert_eq!(without_doubles(6, 6, false), 12);
+        assert_eq!(without_doubles(6, 6, true), 7);
+    }
+
+    #[test]
+    fn green_ticket_test() {
+        assert_eq!(green_ticket(1, 2, 3), 0);
+        assert_eq!(green_ticket(2, 2, 2), 20);
+        assert_eq!(green_ticket(1, 1, 2), 10);
+    }
+
+    #[test]
+    fn sum_limit_test() {
+        assert_eq!(sum_limit(2, 3), 5);
+        assert_eq!(sum_limit(8, 3), 8);
+        assert_eq!(sum_limit(8, 1), 9);
+        assert_eq!(sum_limit(80, 19), 99);
+        assert_eq!(sum_limit(80, 20), 80);
     }
 }
