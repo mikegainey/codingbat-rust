@@ -2,6 +2,7 @@
 
 mod warmup1;
 mod warmup2;
+mod logic1;
+mod logic2;
 mod array1;
 mod array2;
-mod logic1;
