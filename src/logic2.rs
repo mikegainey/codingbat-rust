@@ -132,8 +132,88 @@ fn round_sum(a: i32, b: i32, c: i32) -> i32 {
 // evenly_spaced(4, 6, 2) → true
 // evenly_spaced(4, 6, 3) → false
 
+// find the min and max values; if the difference is odd, there is no middle
+// compute what the middle should be (max - min) / 2
+// check each value to see if it's the middle
+
 fn evenly_spaced(a: i32, b: i32, c: i32) -> bool {
-    a + b == c
+    use std::cmp;
+
+    let min = cmp::min(cmp::min(a, b), c);
+    let max = cmp::max(cmp::max(a, b), c);
+    let span = max - min;
+
+    if span % 2 == 1 {
+        false // if span is odd, there is no middle
+    } else {
+        let middle = min + (span / 2);            // compute what the middle should be
+        a == middle || b == middle || c == middle // check to see if it's there
+    }
+}
+
+// Logic-2 > luckySum
+// https://codingbat.com/prob/p130788
+
+// Given 3 int values, a b c, return their sum.
+// However, if one of the values is 13 then it does not count towards the sum and values to its right do not count.
+// So for example, if b is 13, then both b and c do not count.
+
+// lucky_sum(1, 2, 3) → 6
+// lucky_sum(1, 2, 13) → 3
+// lucky_sum(1, 13, 3) → 1
+
+fn lucky_sum(a: i32, b: i32, c: i32) -> i32 {
+    if a == 13 {
+        0
+    } else if b == 13 {
+        a
+    } else if c == 13 {
+        a + b
+    } else {
+        a + b + c
+    }
+}
+
+// Logic-2 > closeFar
+// https://codingbat.com/prob/p138990
+
+// Given three ints, a b c, return true if one of b or c is "close" (differing from a by at most 1),
+// while the other is "far", differing from both other values by 2 or more.
+
+// close_far(1, 2, 10) → true
+// close_far(1, 2, 3) → false
+// close_far(4, 1, 3) → true
+
+fn close_far(a: i32, b: i32, c: i32) -> bool {
+    let b_close = (a - b).abs() <= 1;
+    let c_close = (a - c).abs() <= 1;
+    let b_far = (b - a).abs() >= 2 && (b - c).abs() >= 2;
+    let c_far = (c - a).abs() >= 2 && (c - b).abs() >= 2;
+
+    b_close && c_far || c_close && b_far
+}
+
+// Logic-2 > makeChocolate
+// https://codingbat.com/prob/p191363
+
+// We want make a package of goal kilos of chocolate. We have small bars (1 kilo each) and big bars (5 kilos each).
+// Return the number of small bars to use, assuming we always use big bars before small bars.
+// Return -1 if it can't be done.
+
+// make_chocolate(4, 1, 9) → 4
+// make_chocolate(4, 1, 10) → -1
+// make_chocolate(4, 1, 7) → 2
+
+fn make_chocolate(small: u32, big: u32, goal: u32) -> i32 {
+    let big_needed = goal / 5;
+    if big < big_needed {
+        return -1;
+    }
+    let small_needed = goal % 5;
+    if small < small_needed {
+        return -1;
+    }
+    small_needed as i32
 }
 
 #[cfg(test)]
@@ -184,5 +264,31 @@ mod tests {
         assert_eq!(evenly_spaced(2, 4, 6), true);
         assert_eq!(evenly_spaced(4, 6, 2), true);
         assert_eq!(evenly_spaced(4, 6, 3), false);
+        assert_eq!(evenly_spaced(4, 0, 8), true);
+        assert_eq!(evenly_spaced(50, 0, 24), false);
+        assert_eq!(evenly_spaced(50, 0, 25), true);
+    }
+
+    #[test]
+    fn lucky_sum_test() {
+        assert_eq!(lucky_sum(1, 2, 3), 6);
+        assert_eq!(lucky_sum(1, 2, 13), 3);
+        assert_eq!(lucky_sum(1, 13, 3), 1);
+    }
+
+    #[test]
+    fn close_far_test() {
+        assert_eq!(close_far(1, 2, 10), true);
+        assert_eq!(close_far(1, 2, 3), false);
+        assert_eq!(close_far(4, 1, 3), true);
+    }
+
+    #[test]
+    fn make_chocolate_test() {
+        assert_eq!(make_chocolate(4, 1, 9), 4);
+        assert_eq!(make_chocolate(4, 1, 10), -1);
+        assert_eq!(make_chocolate(4, 1, 7), 2);
+        assert_eq!(make_chocolate(4, 4, 17), 2);
+        assert_eq!(make_chocolate(1, 4, 17), -1);
     }
 }
