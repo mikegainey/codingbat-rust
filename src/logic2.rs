@@ -121,6 +121,21 @@ fn round_sum(a: i32, b: i32, c: i32) -> i32 {
     round10(a) + round10(b) + round10(c)
 }
 
+// Logic-2 > evenlySpaced
+// https://codingbat.com/prob/p198700
+
+// Given three ints, a b c, one of them is small, one is medium and one is large.
+// Return true if the three values are evenly spaced,
+// so the difference between small and medium is the same as the difference between medium and large.
+
+// evenly_spaced(2, 4, 6) → true
+// evenly_spaced(4, 6, 2) → true
+// evenly_spaced(4, 6, 3) → false
+
+fn evenly_spaced(a: i32, b: i32, c: i32) -> bool {
+    a + b == c
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -162,5 +177,12 @@ mod tests {
         assert_eq!(round_sum(16, 17, 18), 60);
         assert_eq!(round_sum(12, 13, 14), 30);
         assert_eq!(round_sum(6, 4, 4), 10);
+    }
+
+    #[test]
+    fn evenly_spaced_test() {
+        assert_eq!(evenly_spaced(2, 4, 6), true);
+        assert_eq!(evenly_spaced(4, 6, 2), true);
+        assert_eq!(evenly_spaced(4, 6, 3), false);
     }
 }
