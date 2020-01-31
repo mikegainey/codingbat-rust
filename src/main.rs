@@ -4,6 +4,11 @@
 #![allow(unused_imports)]
 
 fn main() {
+    for x in 1..=10 {
+        if x == 5 {
+            println!("x = {}, yay!", x);
+        }
+    }
 }
 
 // Array-2 > has22

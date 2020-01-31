@@ -216,8 +216,49 @@ fn without_ten1(array: &[i32]) -> Vec<i32> {
     main_part
 }
 
-fn without_ten2(array: &[i32]) -> &[i32] {
-    array
+fn without_ten2(array: &[i32]) -> Vec<i32> {
+    let mut output = Vec::new();
+    let mut ten_count = 0;
+    for a in array.iter() {
+        if a != &10 {
+            output.push(*a);
+        } else {
+            ten_count += 1;
+        }
+    }
+    let mut zeros = vec![0; ten_count];
+    output.append(&mut zeros);
+    output
+}
+
+// Array-2 > fizzBuzz
+// https://codingbat.com/prob/p153059
+
+// Consider the series of numbers beginning at start and running up to but not including end,
+// so for example start=1 and end=5 gives the series 1, 2, 3, 4.
+// Return a new String[] array containing the string form of these numbers,
+// except for multiples of 3, use "Fizz" instead of the number,
+// for multiples of 5 use "Buzz",
+// and for multiples of both 3 and 5 use "FizzBuzz".
+
+// fizz_buzz(1, 6) → ["1", "2", "Fizz", "4", "Buzz"]
+// fizz_buzz(1, 8) → ["1", "2", "Fizz", "4", "Buzz", "Fizz", "7"]
+// fizz_buzz(1, 11) → ["1", "2", "Fizz", "4", "Buzz", "Fizz", "7", "8", "Fizz", "Buzz"]
+
+fn fizz_buzz(start: usize, end: usize) -> Vec<String> {
+    let mut output = Vec::new();
+    for n in start..end {
+        if n % 3 == 0 && n % 5 == 0 {
+            output.push("FizzBuzz".to_string());
+        } else if n % 3 == 0 {
+            output.push("Fizz".to_string());
+        } else if n % 5 == 0 {
+            output.push("Buzz".to_string());
+        } else {
+            output.push(n.to_string());
+        }
+    }
+    output
 }
 
 #[cfg(test)]
@@ -318,5 +359,12 @@ mod tests {
         assert_eq!(without_ten2(&[1, 10, 10, 2]), [1, 2, 0, 0]);
         assert_eq!(without_ten2(&[10, 2, 10]), [2, 0, 0]);
         assert_eq!(without_ten2(&[1, 99, 10]), [1, 99, 0]);
+    }
+
+    #[test]
+    fn fizz_buzz_test() {
+        assert_eq!(fizz_buzz(1, 6), ["1", "2", "Fizz", "4", "Buzz"]);
+        assert_eq!(fizz_buzz(1, 8), ["1", "2", "Fizz", "4", "Buzz", "Fizz", "7"]);
+        assert_eq!(fizz_buzz(1, 11), ["1", "2", "Fizz", "4", "Buzz", "Fizz", "7", "8", "Fizz", "Buzz"]);
     }
 }
