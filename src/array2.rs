@@ -138,6 +138,88 @@ fn mod_three(array: &[i32]) -> bool {
     false
 }
 
+// Array-2 > sameEnds
+// https://codingbat.com/prob/p134300
+
+// Return true if the group of N numbers at the start and end of the array are the same.
+// For example, with {5, 6, 45, 99, 13, 5, 6}, the ends are the same for n=0 and n=2, and false for n=1 and n=3.
+// You may assume that n is in the range 0..nums.length inclusive.
+
+// same_ends([5, 6, 45, 99, 13, 5, 6], 1) → false
+// same_ends([5, 6, 45, 99, 13, 5, 6], 2) → true
+// same_ends([5, 6, 45, 99, 13, 5, 6], 3) → false
+
+fn same_ends(array: &[i32], n: usize) -> bool {
+    let len = array.len();
+    let firstn = &array[..n];      // let signals a new variable on the stack, which requires a
+    let lastn = &array[(len-n)..]; // value of known size (a reference)
+    firstn == lastn
+}
+
+// Array-2 > shiftLeft
+// https://codingbat.com/prob/p105031
+
+// Return an array that is "left shifted" by one -- so {6, 2, 5, 3} returns {2, 5, 3, 6}.
+// You may modify and return the given array, or return a new array.
+
+// shift_left([6, 2, 5, 3]) → [2, 5, 3, 6]
+// shift_left([1, 2]) → [2, 1]
+// shift_left([1]) → [1]
+
+fn shift_left(array: &[i32]) -> Vec<i32> {
+    let mut output = array[1..].to_vec();
+    output.push(array[0]);
+    output
+}
+
+// Array-2 > post4
+// https://codingbat.com/prob/p164144
+
+// Given a non-empty array of ints, return a new array
+// containing the elements from the original array that come after the last 4 in the original array.
+// The original array will contain at least one 4.
+
+// post4([2, 4, 1, 2]) → [1, 2]
+// post4([4, 1, 4, 2]) → [2]
+// post4([4, 4, 1, 2, 3]) → [1, 2, 3]
+
+fn post4(array: &[i32]) -> Vec<i32> {
+    let len = array.len();
+    for (x, a) in array.iter().rev().enumerate() {
+        if a == &4 {
+            return array[len-x..].to_vec();
+        }
+    }
+    array.to_vec() // this should never happen because "the original array will contain at least one 4"
+}
+
+// Array-2 > withoutTen
+// https://codingbat.com/prob/p196976
+
+// Return a version of the given array where all the 10's have been removed.
+// The remaining elements should shift left towards the start of the array as needed,
+// and the empty spaces a the end of the array should be 0.
+// So {1, 10, 10, 2} yields {1, 2, 0, 0}. You may modify and return the given array or make a new array.
+
+// without_ten([1, 10, 10, 2]) → [1, 2, 0, 0]
+// without_ten([10, 2, 10]) → [2, 0, 0]
+// without_ten([1, 99, 10]) → [1, 99, 0]
+
+fn without_ten1(array: &[i32]) -> Vec<i32> {
+    let mut main_part: Vec<i32> = array.iter()
+        .filter(|&x| x != &10)
+        .cloned() // convert from &i32 to i32
+        .collect();
+    let zeros_needed = array.len() - main_part.len();
+    let mut zeros = vec![0; zeros_needed];
+    main_part.append(&mut zeros); // the mutability of the two vectors must match
+    main_part
+}
+
+fn without_ten2(array: &[i32]) -> &[i32] {
+    array
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -200,5 +282,41 @@ mod tests {
         assert_eq!(mod_three(&[2, 1, 2, 5]), false);
         assert_eq!(mod_three(&[2, 4, 2, 5]), true);
         assert_eq!(mod_three(&[2, 4, 7, 5, 1]), true);
+    }
+
+    #[test]
+    fn same_ends_test() {
+        assert_eq!(same_ends(&[5, 6, 45, 99, 13, 5, 6], 1), false);
+        assert_eq!(same_ends(&[5, 6, 45, 99, 13, 5, 6], 0), true);
+        assert_eq!(same_ends(&[5, 6, 45, 99, 13, 5, 6], 2), true);
+        assert_eq!(same_ends(&[5, 6, 45, 99, 13, 5, 6], 3), false);
+    }
+
+    #[test]
+    fn shift_left_test() {
+        assert_eq!(shift_left(&[6, 2, 5, 3]), [2, 5, 3, 6]);
+        assert_eq!(shift_left(&[1, 2]), [2, 1]);
+        assert_eq!(shift_left(&[1]), [1]);
+    }
+
+    #[test]
+    fn post4_test() {
+        assert_eq!(post4(&[2, 4, 1, 2]), [1, 2]);
+        assert_eq!(post4(&[4, 1, 4, 2]), [2]);
+        assert_eq!(post4(&[4, 4, 1, 2, 3]), [1, 2, 3]);
+    }
+
+    #[test]
+    fn without_ten1_test() {
+        assert_eq!(without_ten1(&[1, 10, 10, 2]), [1, 2, 0, 0]);
+        assert_eq!(without_ten1(&[10, 2, 10]), [2, 0, 0]);
+        assert_eq!(without_ten1(&[1, 99, 10]), [1, 99, 0]);
+    }
+
+    #[test]
+    fn without_ten2_test() {
+        assert_eq!(without_ten2(&[1, 10, 10, 2]), [1, 2, 0, 0]);
+        assert_eq!(without_ten2(&[10, 2, 10]), [2, 0, 0]);
+        assert_eq!(without_ten2(&[1, 99, 10]), [1, 99, 0]);
     }
 }
