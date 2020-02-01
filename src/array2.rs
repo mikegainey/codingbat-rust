@@ -261,6 +261,105 @@ fn fizz_buzz(start: usize, end: usize) -> Vec<String> {
     output
 }
 
+// Array-2 > bigDiff
+// https://codingbat.com/prob/p196640
+
+// Given an array length 1 or more of ints, return the difference between the largest and smallest values in the array.
+
+// big_diff([10, 3, 5, 6]) → 7
+// big_diff([7, 2, 10, 9]) → 8
+// big_diff([2, 10, 7, 2]) → 8
+
+fn big_diff(array: &[i32]) -> i32 {
+    let mut largest = array[0];
+    let mut smallest = array[0];
+    for n in array.iter() {
+        if n > &largest {
+            largest = *n;
+        } else if n < &smallest {
+            smallest = *n;
+        }
+    }
+    largest - smallest
+}
+
+// Array-2 > sum67
+// https://codingbat.com/prob/p111327
+
+// Return the sum of the numbers in the array,
+// except ignore sections of numbers starting with a 6 and extending to the next 7 (every 6 will be followed by a 7).
+// Return 0 for no numbers.
+
+// sum67([1, 2, 2]) → 5
+// sum67([1, 2, 2, 6, 99, 99, 7]) → 5
+// sum67([1, 1, 6, 7, 2]) → 4
+
+fn sum67(array: &[i32]) -> i32 {
+    let mut sum = 0;
+    let mut count = true;
+    for a in array.iter() {
+        if a == &6 {
+            count = false;
+        } else if a == &7 {
+            count = true;
+        } else if count {
+            sum += a;
+        }
+    }
+    sum
+}
+
+// Array-2 > sum28
+// https://codingbat.com/prob/p199612
+
+// Given an array of ints, return true if the sum of all the 2's in the array is exactly 8.
+
+// sum28([2, 3, 2, 2, 4, 2]) → true
+// sum28([2, 3, 2, 2, 4, 2, 2]) → false
+// sum28([1, 2, 3, 4]) → false
+
+fn sum28(array: &[i32]) -> bool {
+    array.iter()
+        .filter(|&x| x == &2)
+        .sum::<i32>() == 8
+}
+
+// Array-2 > only14
+// https://codingbat.com/prob/p186672
+
+// Given an array of ints, return true if every element is a 1 or a 4.
+
+// only14([1, 4, 1, 4]) → true
+// only14([1, 4, 2, 4]) → false
+// only14([1, 1]) → true
+
+fn only14(array: &[i32]) -> bool {
+    array.iter()
+        .all(|&x| x == 1 || x == 4)
+}
+
+// Array-2 > isEverywhere
+// https://codingbat.com/prob/p110222
+
+// We'll say that a value is "everywhere" in an array if for every pair of adjacent elements in the array,
+// at least one of the pair is that value. Return true if the given value is everywhere in the array.
+
+// is_everywhere([1, 2, 1, 3], 1) → true
+// is_everywhere([1, 2, 1, 3], 2) → false
+// is_everywhere([1, 2, 1, 3, 4], 1) → false
+
+fn is_everywhere(array: &[i32], val: i32) -> bool {
+    println!("input = {:?}", &array);
+    let lastx = array.len() - 1;
+    for x in 0..lastx {
+        println!("does {:?} contain {}?", &array[x..x+2], &val);
+        if array[x..=x+1].contains(&val) {
+            return true;
+        }
+    }
+    false
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -366,5 +465,40 @@ mod tests {
         assert_eq!(fizz_buzz(1, 6), ["1", "2", "Fizz", "4", "Buzz"]);
         assert_eq!(fizz_buzz(1, 8), ["1", "2", "Fizz", "4", "Buzz", "Fizz", "7"]);
         assert_eq!(fizz_buzz(1, 11), ["1", "2", "Fizz", "4", "Buzz", "Fizz", "7", "8", "Fizz", "Buzz"]);
+    }
+
+    #[test]
+    fn big_diff_test() {
+        assert_eq!(big_diff(&[10, 3, 5, 6]), 7);
+        assert_eq!(big_diff(&[7, 2, 10, 9]), 8);
+        assert_eq!(big_diff(&[2, 10, 7, 2]), 8);
+    }
+
+    #[test]
+    fn sum67_test() {
+        assert_eq!(sum67(&[1, 2, 2]), 5);
+        assert_eq!(sum67(&[1, 2, 2, 6, 99, 99, 7]), 5);
+        assert_eq!(sum67(&[1, 1, 6, 7, 2]), 4);
+    }
+
+    #[test]
+    fn sum28_test() {
+        assert_eq!(sum28(&[2, 3, 2, 2, 4, 2]), true);
+        assert_eq!(sum28(&[2, 3, 2, 2, 4, 2, 2]), false);
+        assert_eq!(sum28(&[1, 2, 3, 4]), false);
+    }
+
+    #[test]
+    fn only14_test() {
+        assert_eq!(only14(&[1, 4, 1, 4]), true);
+        assert_eq!(only14(&[1, 4, 2, 4]), false);
+        assert_eq!(only14(&[1, 1]), true);
+    }
+
+    #[test]
+    fn is_everywhere_test() {
+        assert_eq!(is_everywhere(&[1, 2, 1, 3], 1), true);
+        assert_eq!(is_everywhere(&[1, 2, 1, 3], 2), false);
+        assert_eq!(is_everywhere(&[1, 2, 1, 3, 4], 1), false);
     }
 }
