@@ -358,6 +358,156 @@ fn is_everywhere(array: &[i32], val: i32) -> bool {
     true
 }
 
+// Array-2 > has77
+// https://codingbat.com/prob/p168357
+
+// Given an array of ints, return true if the array contains two 7's next to each other,
+// or there are two 7's separated by one element, such as with {7, 1, 7}.
+
+// has77([1, 7, 7]) → true
+// has77([1, 7, 1, 7]) → true
+// has77([1, 7, 1, 1, 7]) → false
+
+fn has77(array: &[i32]) -> bool {
+    let len = array.len();
+    for x in 0..len-1 {
+        if array[x] == 7 && array[x+1] == 7 {
+            return true;
+        }
+        if x < len - 2 {
+            if array[x] == 7 && array[x+2] == 7 {
+                return true;
+            }
+        }
+    }
+    false
+}
+
+// Array-2 > haveThree
+// https://codingbat.com/prob/p109783
+
+// Given an array of ints, return true if the value 3 appears in the array exactly 3 times, and no 3's are next to each other.
+
+// have_three([3, 1, 3, 1, 3]) → true
+// have_three([3, 1, 3, 3]) → false
+// have_three([3, 4, 3, 3, 4]) → false
+
+#[allow(unused_assignments)]
+fn have_three(array: &[i32]) -> bool {
+    let mut count = 0;
+    let mut previous = None;
+    for a in array.iter() {
+        if a == &3 {
+            count += 1;
+            if previous == Some(&3) {
+                return false;
+            }
+            previous = Some(&3);
+        }
+        previous = Some(a);
+    }
+    if count == 3 {
+        true
+    } else {
+        false
+    }
+}
+
+// Array-2 > tripleUp
+// https://codingbat.com/prob/p137874
+
+// Return true if the array contains, somewhere, three increasing adjacent numbers like .... 4, 5, 6, ... or 23, 24, 25.
+
+// triple_up([1, 4, 5, 6, 2]) → true
+// triple_up([1, 2, 3]) → true
+// triple_up([1, 2, 4]) → false
+
+fn triple_up(array: &[i32]) -> bool {
+    let lastx = array.len() - 3;
+    for x in 0..=lastx {
+        if array[x+1] == array[x] + 1 && array[x+2] == array[x] + 2 {
+            return true;
+        }
+    }
+    false
+}
+
+// Array-2 > tenRun
+// https://codingbat.com/prob/p199484
+
+// For each multiple of 10 in the given array, change all the values following it to be that multiple of 10,
+// until encountering another multiple of 10. So {2, 10, 3, 4, 20, 5} yields {2, 10, 10, 10, 20, 20}.
+
+// ten_run([2, 10, 3, 4, 20, 5]) → [2, 10, 10, 10, 20, 20]
+// ten_run([10, 1, 20, 2]) → [10, 10, 20, 20]
+// ten_run([10, 1, 9, 20]) → [10, 10, 10, 20]
+
+fn ten_run(array: &[i32]) -> Vec<i32> {
+    let mut output = Vec::new();
+    let mut previous_multiple = None;
+
+    for a in array.iter() {
+        if a % 10 == 0 {
+            output.push(*a);
+            previous_multiple = Some(*a);
+        } else {
+            output.push(match previous_multiple {
+                None => *a,
+                Some(multiple) => multiple
+            });
+        }
+    }
+    output
+}
+
+// Array-2 > notAlone
+// https://codingbat.com/prob/p169506
+
+// An element in an array is "alone" if there are values before and after it, and those values are different from it.
+// Return a version of the given array where every instance of the given value which is alone is replaced
+// by whichever value to its left or right is larger.
+
+// not_alone([1, 2, 3], 2) → [1, 3, 3]
+// not_alone([1, 2, 3, 2, 5, 2], 2) → [1, 3, 3, 5, 5, 2]
+// not_alone([3, 4], 3) → [3, 4]
+
+fn not_alone(array: &[i32], val: i32) -> Vec<i32> {
+    let len = array.len();
+    if len < 3 {
+        return array.to_vec();
+    }
+
+    use std::cmp;
+
+    let mut output = vec![array[0]]; // always start with the first element
+    for x in 0..=len-3 {
+        let (left, middle, right) = (array[x], array[x+1], array[x+2]);
+        let alone = (middle != left) && (middle != right);
+        if middle == val && alone {
+            output.push(cmp::max(left, right));
+        } else {
+            output.push(middle);
+        }
+    }
+    output.push(array[len-1]);
+    output
+}
+
+// Array-2 > zeroMax
+// https://codingbat.com/prob/p187050
+
+// Return a version of the given array ...
+// where each zero value in the array is replaced by the largest odd value to the right of the zero in the array.
+// If there is no odd value to the right of the zero, leave the zero as a zero.
+
+// zero_max([0, 5, 0, 3]) → [5, 5, 3, 3]
+// zero_max([0, 4, 0, 3]) → [3, 4, 3, 3]
+// zero_max([0, 1, 0]) → [1, 1, 0]
+
+fn zero_max(array: &[i32]) -> Vec<i32> {
+    array.to_vec()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -498,5 +648,50 @@ mod tests {
         assert_eq!(is_everywhere(&[1, 2, 1, 3], 1), true);
         assert_eq!(is_everywhere(&[1, 2, 1, 3], 2), false);
         assert_eq!(is_everywhere(&[1, 2, 1, 3, 4], 1), false);
+    }
+
+    #[test]
+    fn has77_test() {
+        assert_eq!(has77(&[1, 7, 7]), true);
+        assert_eq!(has77(&[1, 7, 1, 7]), true);
+        assert_eq!(has77(&[1, 7, 1, 1, 7]), false);
+    }
+
+    #[test]
+    fn have_three_test() {
+        assert_eq!(have_three(&[3, 1, 3, 1, 3]), true);
+        assert_eq!(have_three(&[3, 1, 3, 3]), false);
+        assert_eq!(have_three(&[3, 4, 3, 3, 4]), false);
+    }
+
+    #[test]
+    fn triple_up_test() {
+        assert_eq!(triple_up(&[1, 4, 5, 6, 2]), true);
+        assert_eq!(triple_up(&[1, 2, 3]), true);
+        assert_eq!(triple_up(&[1, 2, 4]), false);
+        assert_eq!(triple_up(&[1, 2, 4, 5, 6]), true);
+        assert_eq!(triple_up(&[1, 2, 3, 5, 6]), true);
+        assert_eq!(triple_up(&[1, 2, 0, 5, 6]), false);
+    }
+
+    #[test]
+    fn ten_run_test() {
+        assert_eq!(ten_run(&[2, 10, 3, 4, 20, 5]), [2, 10, 10, 10, 20, 20]);
+        assert_eq!(ten_run(&[10, 1, 20, 2]), [10, 10, 20, 20]);
+        assert_eq!(ten_run(&[10, 1, 9, 20]), [10, 10, 10, 20]);
+    }
+
+    #[test]
+    fn not_alone_test() {
+        assert_eq!(not_alone(&[1, 2, 3], 2), [1, 3, 3]);
+        assert_eq!(not_alone(&[1, 2, 3, 2, 5, 2], 2), [1, 3, 3, 5, 5, 2]);
+        assert_eq!(not_alone(&[3, 4], 3), [3, 4]);
+    }
+
+    #[test]
+    fn zero_max_test() {
+        assert_eq!(zero_max(&[0, 5, 0, 3]), [5, 5, 3, 3]);
+        assert_eq!(zero_max(&[0, 4, 0, 3]), [3, 4, 3, 3]);
+        assert_eq!(zero_max(&[0, 1, 0]), [1, 1, 0]);
     }
 }

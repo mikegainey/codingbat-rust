@@ -4,11 +4,11 @@
 #![allow(unused_imports)]
 
 fn main() {
-    for x in 1..=10 {
-        if x == 5 {
-            println!("x = {}, yay!", x);
-        }
-    }
+    let array = vec![5,7,3];
+
+    let largest = &array.iter().max().unwrap();
+
+    println!("The largest number in {:?} is {}.", array, largest);
 }
 
 // Array-2 > has22
