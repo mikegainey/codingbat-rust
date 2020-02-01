@@ -349,15 +349,13 @@ fn only14(array: &[i32]) -> bool {
 // is_everywhere([1, 2, 1, 3, 4], 1) → false
 
 fn is_everywhere(array: &[i32], val: i32) -> bool {
-    println!("input = {:?}", &array);
     let lastx = array.len() - 1;
     for x in 0..lastx {
-        println!("does {:?} contain {}?", &array[x..x+2], &val);
-        if array[x..=x+1].contains(&val) {
-            return true;
+        if !array[x..=x+1].contains(&val) {
+            return false;
         }
     }
-    false
+    true
 }
 
 #[cfg(test)]
