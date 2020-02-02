@@ -688,7 +688,112 @@ fn has12(array: &[isize]) -> bool {
 // two_two([2, 2, 4, 2]) → false
 
 fn two_two(array: &[isize]) -> bool {
-    array[0] == array[0]
+    let len = array.len();
+    if len < 2 {
+        return false;
+    } else if array[0] == 2 && array[1] != 2 {
+        // lone 2 on the left
+        return false;
+    } else if array[len-1] == 2 && array[len-2] != 2 {
+        // lone 2 on the right
+        return false;
+    }
+    for x in 0..=len-3 {
+        let (left, middle, right) = (array[x], array[x+1], array[x+2]);
+        if left != 2 && middle == 2 && right != 2 {
+            // lone 2 in the middle
+            return false;
+        }
+    }
+    true
+}
+
+// Array-2 > fizzArray3
+// https://codingbat.com/prob/p142539
+
+// Given start and end numbers,
+// return a new array containing the sequence of integers from start up to but not including end,
+// so start=5 and end=10 yields {5, 6, 7, 8, 9}.
+// The end number will be greater or equal to the start number.
+// Note that a length-0 array is valid. (See also: FizzBuzz Code)
+
+// fizz_array3(5, 10) → [5, 6, 7, 8, 9]
+// fizz_array3(11, 18) → [11, 12, 13, 14, 15, 16, 17]
+// fizz_array3(1, 3) → [1, 2]
+
+fn fizz_array3(start: usize, end: usize) -> Vec<usize> {
+    (start..end)
+        .collect::<Vec<_>>()
+}
+
+// Array-2 > pre4
+// https://codingbat.com/prob/p100246
+
+// Given a non-empty array of ints,
+// return a new array containing the elements from the original array that come before the first 4 in the original array.
+// The original array will contain at least one 4.
+
+// pre4([1, 2, 4, 1]) → [1, 2]
+// pre4([3, 1, 4]) → [3, 1]
+// pre4([1, 4, 4]) → [1]
+
+fn pre4(array: &[usize]) -> Vec<usize> {
+    array.iter()
+        .take_while(|&x| x != &4)
+        .cloned()
+        .collect::<Vec<_>>()
+}
+
+// Array-2 > zeroFront
+// https://codingbat.com/prob/p193753
+
+// Return an array that contains the exact same numbers as the given array,
+// but rearranged so that all the zeros are grouped at the start of the array.
+// The order of the non-zero numbers does not matter.
+// So {1, 0, 0, 1} becomes {0 ,0, 1, 1}. You may modify and return the given array or make a new array.
+
+// zero_front([1, 0, 0, 1]) → [0, 0, 1, 1]
+// zero_front([0, 1, 1, 0, 1]) → [0, 0, 1, 1, 1]
+// zero_front([1, 0]) → [0, 1]
+
+fn zero_front(array: &[usize]) -> Vec<usize> {
+    let mut non_zeros = Vec::new();
+    let mut zero_count = 0;
+    for a in array.iter() {
+        if a == &0 {
+            zero_count += 1;
+        } else {
+            non_zeros.push(*a);
+        }
+    }
+    let mut output = vec![0; zero_count];
+    output.extend(non_zeros);
+    output
+}
+
+// Array-2 > evenOdd
+// https://codingbat.com/prob/p105771
+
+// Return an array that contains the exact same numbers as the given array,
+// but rearranged so that all the even numbers come before all the odd numbers.
+// Other than that, the numbers can be in any order. You may modify and return the given array, or make a new array.
+
+// even_odd([1, 0, 1, 0, 0, 1, 1]) → [0, 0, 0, 1, 1, 1, 1]
+// even_odd([3, 3, 2]) → [2, 3, 3]
+// even_odd([2, 2, 2]) → [2, 2, 2]
+
+fn even_odd(array: &[isize]) -> Vec<isize> {
+    let mut evens = Vec::new();
+    let mut odds = Vec::new();
+    for a in array.iter() {
+        if a % 2 == 0 {
+            evens.push(*a);
+        } else {
+            odds.push(*a);
+        }
+    }
+    evens.extend(odds);
+    evens
 }
 
 #[cfg(test)]
@@ -924,6 +1029,36 @@ mod tests {
     fn two_two_test() {
         assert_eq!(two_two(&[4, 2, 2, 3]), true);
         assert_eq!(two_two(&[2, 2, 4]), true);
+        assert_eq!(two_two(&[4, 2, 2]), true);
         assert_eq!(two_two(&[2, 2, 4, 2]), false);
+        assert_eq!(two_two(&[2, 4, 2, 2]), false);
+    }
+
+    #[test]
+    fn fizz_array3_test() {
+        assert_eq!(fizz_array3(5, 10), [5, 6, 7, 8, 9]);
+        assert_eq!(fizz_array3(11, 18), [11, 12, 13, 14, 15, 16, 17]);
+        assert_eq!(fizz_array3(1, 3), [1, 2]);
+    }
+
+    #[test]
+    fn pre4_test() {
+        assert_eq!(pre4(&[1, 2, 4, 1]), [1, 2]);
+        assert_eq!(pre4(&[3, 1, 4]), [3, 1]);
+        assert_eq!(pre4(&[1, 4, 4]), [1]);
+    }
+
+    #[test]
+    fn zero_front_test() {
+        assert_eq!(zero_front(&[1, 0, 0, 1]), [0, 0, 1, 1]);
+        assert_eq!(zero_front(&[0, 1, 1, 0, 1]), [0, 0, 1, 1, 1]);
+        assert_eq!(zero_front(&[1, 0]), [0, 1]);
+    }
+
+    #[test]
+    fn even_odd_test() {
+        assert_eq!(even_odd(&[1, 0, 1, 0, 0, 1, 1]), [0, 0, 0, 1, 1, 1, 1]);
+        assert_eq!(even_odd(&[3, 3, 2]), [2, 3, 3]);
+        assert_eq!(even_odd(&[2, 2, 2]), [2, 2, 2]);
     }
 }
