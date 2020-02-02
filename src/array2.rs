@@ -505,7 +505,9 @@ fn not_alone(array: &[i32], val: i32) -> Vec<i32> {
 // zero_max([0, 1, 0]) → [1, 1, 0]
 
 fn zero_max(array: &[i32]) -> Vec<i32> {
-    array.to_vec()
+    let output = Vec::new();
+    for a in array.iter().rev() {
+    }
 }
 
 #[cfg(test)]
