@@ -209,6 +209,86 @@ fn extra_end(s: &str) -> String {
     format!("{0}{0}{0}", &s[len-2..])
 }
 
+// String-1 > withoutEnd
+// https://codingbat.com/prob/p130896
+
+// Given a string, return a version without the first and last char, so "Hello" yields "ell".
+// The string length will be at least 2.
+
+// without_end("Hello") → "ell"
+// without_end("java") → "av"
+// without_end("coding") → "odin"
+
+fn without_end(s: &str) -> &str {
+    let len = s.len();
+    &s[1..len-1]
+}
+
+// String-1 > left2
+// https://codingbat.com/prob/p197720
+
+// Given a string, return a "rotated left 2" version where the first 2 chars are moved to the end.
+// The string length will be at least 2.
+
+// left2("Hello") → "lloHe"
+// left2("java") → "vaja"
+// left2("Hi") → "Hi"
+
+fn left2(s: &str) -> String {
+    format!("{}{}", &s[2..], &s[..2])
+}
+
+// String-1 > withouEnd2
+// https://codingbat.com/prob/p174254
+
+// Given a string, return a version without both the first and last char of the string.
+// The string may be any length, including 0.
+
+// withou_end2("Hello") → "ell"
+// withou_end2("abc") → "b"
+// withou_end2("ab") → ""
+
+fn withou_end2(s: &str) -> &str {
+    let len = s.len();
+    if len < 2 {
+        ""
+    } else {
+        &s[1..len-1]
+    }
+}
+
+// String-1 > nTwice
+// https://codingbat.com/prob/p174148
+
+// Given a string and an int n, return a string made of the first and last n chars from the string.
+// The string length will be at least n.
+
+// n_twice("Hello", 2) → "Helo"
+// n_twice("Chocolate", 3) → "Choate"
+// n_twice("Chocolate", 1) → "Ce"
+
+fn n_twice(s: &str, n: usize) -> String {
+    let len = s.len();
+    let front = &s[..n];
+    let back = &s[len-n..];
+    format!("{}{}", front, back)
+}
+
+// String-1 > hasBad
+// https://codingbat.com/prob/p139075
+
+// Given a string, return true if "bad" appears starting at index 0 or 1 in the string,
+// such as with "badxxx" or "xbadxx" but not "xxbadxx".
+// The string may be any length, including 0.
+
+// has_bad("badxx") → true
+// has_bad("xbadxx") → true
+// has_bad("xxbadxx") → false
+
+fn has_bad(s: &str) -> bool {
+    &s[..3] == "bad" || &s[1..4] == "bad"
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -302,5 +382,40 @@ mod tests {
         assert_eq!(extra_end("Hello"), "lololo");
         assert_eq!(extra_end("ab"), "ababab");
         assert_eq!(extra_end("Hi"), "HiHiHi");
+    }
+
+    #[test]
+    fn without_end_test() {
+        assert_eq!(without_end("Hello"), "ell");
+        assert_eq!(without_end("java"), "av");
+        assert_eq!(without_end("coding"), "odin");
+    }
+
+    #[test]
+    fn left2_test() {
+        assert_eq!(left2("Hello"), "lloHe");
+        assert_eq!(left2("java"), "vaja");
+        assert_eq!(left2("Hi"), "Hi");
+    }
+
+    #[test]
+    fn withou_end2_test() {
+        assert_eq!(withou_end2("Hello"), "ell");
+        assert_eq!(withou_end2("abc"), "b");
+        assert_eq!(withou_end2("ab"), "");
+    }
+
+    #[test]
+    fn n_twice_test() {
+        assert_eq!(n_twice("Hello", 2), "Helo");
+        assert_eq!(n_twice("Chocolate", 3), "Choate");
+        assert_eq!(n_twice("Chocolate", 1), "Ce");
+    }
+
+    #[test]
+    fn has_bad_test() {
+        assert_eq!(has_bad("badxx"), true);
+        assert_eq!(has_bad("xbadxx"), true);
+        assert_eq!(has_bad("xxbadxx"), false);
     }
 }
