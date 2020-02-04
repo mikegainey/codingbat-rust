@@ -132,9 +132,9 @@ fn last_chars(a: &str, b: &str) -> String {
 // see_color("blueTimes") → "blue"
 
 fn see_color(s: &str) -> &str {
-    if s.len() >= 3 && &s[..3] == "red" {
+    if s.starts_with("red") {
         &s[..3]
-    } else if s.len() >= 4 && &s[..4] == "blue" {
+    } else if s.starts_with("blue") {
         &s[..4]
     } else {
         ""
@@ -289,6 +289,175 @@ fn has_bad(s: &str) -> bool {
     &s[..3] == "bad" || &s[1..4] == "bad"
 }
 
+// String-1 > conCat
+// https://codingbat.com/prob/p132118
+
+// Given two strings, append them together (known as "concatenation") and return the result.
+// However, if the concatenation creates a double-char, then omit one of the chars, so "abc" and "cat" yields "abcat".
+
+// con_cat("abc", "cat") → "abcat"
+// con_cat("dog", "cat") → "dogcat"
+// con_cat("abc", "") → "abc"
+
+fn con_cat(a: &str, b: &str) -> String {
+    let (alen, blen) = (a.len(), b.len());
+    if alen == 0 {
+        b.to_string()
+    } else if blen == 0 {
+        a.to_string()
+      // compare the last character of a with the first character of b
+    } else if a.chars().last().unwrap() == b.chars().next().unwrap() {
+        format!("{}{}", &a, &b[1..])
+    } else {
+        format!("{}{}", &a, &b)
+    }
+}
+
+// String-1 > frontAgain
+// https://codingbat.com/prob/p196652
+
+// Given a string, return true if the first 2 chars in the string also appear at the end of the string,
+// such as with "edited".
+
+// front_again("edited") → true
+// front_again("edit") → false
+// front_again("ed") → true
+
+fn front_again(s: &str) -> bool {
+    let len = s.len();
+    s[..2] == s[len-2..]
+}
+
+// String-1 > without2
+// https://codingbat.com/prob/p142247
+
+// Given a string, if a length 2 substring appears at both its beginning and end,
+// return a string without the substring at the beginning, so "HelloHe" yields "lloHe".
+// The substring may overlap with itself, so "Hi" yields "". Otherwise, return the original string unchanged.
+
+// without2("HelloHe") → "lloHe"
+// without2("HelloHi") → "HelloHi"
+// without2("Hi") → ""
+
+fn without2(s: &str) -> &str {
+    let len = s.len();
+    if s[..2] == s[len-2..] {
+        &s[2..]
+    } else {
+        s
+    }
+}
+
+// String-1 > withoutX
+// https://codingbat.com/prob/p151940
+
+// Given a string, if the first or last chars are 'x', return the string without those 'x' chars,
+// and otherwise return the string unchanged.
+
+// without_x("xHix") → "Hi"
+// without_x("xHi") → "Hi"
+// without_x("Hxix") → "Hxi"
+
+fn without_x(s: &str) -> &str {
+    if !s.is_ascii() {
+        panic!("non-ascii input");
+    }
+    let len = s.len();
+    let front_x = s.starts_with('x');
+    let back_x = s.ends_with('x');
+    if front_x && back_x {
+        &s[1..len-1]
+    } else if front_x {
+        &s[1..]
+    } else if back_x {
+        &s[..len-1]
+    } else {
+        s
+    }
+}
+
+// String-1 > makeTags
+// https://codingbat.com/prob/p147483
+
+// The web is built with HTML strings like "<i>Yay</i>" which draws Yay as italic text.
+// In this example, the "i" tag makes <i> and </i> which surround the word "Yay".
+// Given tag and word strings, create the HTML string with tags around the word, e.g. "<i>Yay</i>".
+
+// make_tags("i", "Yay") → "<i>Yay</i>"
+// make_tags("i", "Hello") → "<i>Hello</i>"
+// make_tags("cite", "Yay") → "<cite>Yay</cite>"
+
+fn make_tags(tag: &str, word: &str) -> String {
+    format!("<{0}>{1}</{0}>", tag, word)
+}
+
+// String-1 > firstTwo
+// https://codingbat.com/prob/p163411
+
+// Given a string, return the string made of its first two chars, so the String "Hello" yields "He".
+// If the string is shorter than length 2, return whatever there is,
+// so "X" yields "X", and the empty string "" yields the empty string "".
+
+// first_two("Hello") → "He"
+// first_two("abcdefg") → "ab"
+// first_two("ab") → "ab"
+
+fn first_two(s: &str) -> &str {
+    use std::cmp;
+
+    let len = cmp::min(2, s.len());
+    &s[..len]
+}
+
+// String-1 > comboString
+// https://codingbat.com/prob/p168564
+
+// Given 2 strings, a and b, return a string of the form short+long+short,
+// with the shorter string on the outside and the longer string on the inside.
+// The strings will not be the same length, but they may be empty (length 0).
+
+// combo_string("Hello", "hi") → "hiHellohi"
+// combo_string("hi", "Hello") → "hiHellohi"
+// combo_string("aaa", "b") → "baaab"
+
+fn combo_string(a: &str, b: &str) -> String {
+    if a.len() < b.len() {
+        format!("{0}{1}{0}", a, b)
+    } else {
+        format!("{0}{1}{0}", b, a)
+    }
+}
+
+// String-1 > right2
+// https://codingbat.com/prob/p130781
+
+// Given a string, return a "rotated right 2" version where the last 2 chars are moved to the start.
+// The string length will be at least 2.
+
+// right2("Hello") → "loHel"
+// right2("java") → "vaja"
+// right2("Hi") → "Hi"
+
+fn right2(s: &str) -> String {
+    let len = s.len();
+    format!("{}{}", &s[len-2..], &s[..len-2])
+}
+
+// String-1 > middleTwo
+// https://codingbat.com/prob/p137729
+
+// Given a string of even length, return a string made of the middle two chars,
+// so the string "string" yields "ri". The string length will be at least 2.
+
+// middle_two("string") → "ri"
+// middle_two("code") → "od"
+// middle_two("Practice") → "ct"
+
+fn middle_two(s: &str) -> &str {
+    let midx = s.len() / 2;
+    &s[midx-1..midx+1]
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -417,5 +586,68 @@ mod tests {
         assert_eq!(has_bad("badxx"), true);
         assert_eq!(has_bad("xbadxx"), true);
         assert_eq!(has_bad("xxbadxx"), false);
+    }
+
+    #[test]
+    fn con_cat_test() {
+        assert_eq!(con_cat("abc", "cat"), "abcat");
+        assert_eq!(con_cat("dog", "cat"), "dogcat");
+        assert_eq!(con_cat("abc", ""), "abc");
+    }
+
+    #[test]
+    fn front_again_test() {
+        assert_eq!(front_again("edited"), true);
+        assert_eq!(front_again("edit"), false);
+        assert_eq!(front_again("ed"), true);
+    }
+
+    #[test]
+    fn without2_test() {
+        assert_eq!(without2("HelloHe"), "lloHe");
+        assert_eq!(without2("HelloHi"), "HelloHi");
+        assert_eq!(without2("Hi"), "");
+    }
+
+    #[test]
+    fn without_x_test() {
+        assert_eq!(without_x("xHix"), "Hi");
+        assert_eq!(without_x("xHi"), "Hi");
+        assert_eq!(without_x("Hxix"), "Hxi");
+    }
+
+    #[test]
+    fn make_tags_test() {
+        assert_eq!(make_tags("i", "Yay"), "<i>Yay</i>");
+        assert_eq!(make_tags("i", "Hello"), "<i>Hello</i>");
+        assert_eq!(make_tags("cite", "Yay"), "<cite>Yay</cite>");
+    }
+
+    #[test]
+    fn first_two_test() {
+        assert_eq!(first_two("Hello"), "He");
+        assert_eq!(first_two("abcdefg"), "ab");
+        assert_eq!(first_two("ab"), "ab");
+    }
+
+    #[test]
+    fn combo_string_test() {
+        assert_eq!(combo_string("Hello", "hi"), "hiHellohi");
+        assert_eq!(combo_string("hi", "Hello"), "hiHellohi");
+        assert_eq!(combo_string("aaa", "b"), "baaab");
+    }
+
+    #[test]
+    fn right2_test() {
+        assert_eq!(right2("Hello"), "loHel");
+        assert_eq!(right2("java"), "vaja");
+        assert_eq!(right2("Hi"), "Hi");
+    }
+
+    #[test]
+    fn middle_two_test() {
+        assert_eq!(middle_two("string"), "ri");
+        assert_eq!(middle_two("code"), "od");
+        assert_eq!(middle_two("Practice"), "ct");
     }
 }

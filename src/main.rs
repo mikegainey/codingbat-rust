@@ -4,17 +4,15 @@
 #![allow(unused_imports)]
 
 fn main() {
-    println!("{}", test("michael", ""));
+    let s = "πProof that π is irrational";
+
+    // let mut s_chars = s.chars();
+    // let first = s_chars.next().unwrap();
+    // let last = s.chars().rev().next().unwrap();
+    // let second = s_chars.next().unwrap();
+    // println!("{} {} {}", first, second, last);
+
+    println!("{}", &s[..1]);
 }
 
-
-fn test<'a>(string: &'a str, word: &'a str) -> &'a str {
-    for (x, (s, w)) in string.chars().zip(word.chars()).enumerate() {
-        println!("{} {} {}", x, s, w);
-        if s != w && x > 0 {
-            return &string[..x];
-        }
-    }
-    &string[..word.len()]
-}
 
