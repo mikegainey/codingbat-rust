@@ -458,6 +458,40 @@ fn middle_two(s: &str) -> &str {
     &s[midx-1..midx+1]
 }
 
+// String-1 > twoChar
+// https://codingbat.com/prob/p144623
+
+// Given a string and an index, return a string length 2 starting at the given index.
+// If the index is too big or too small to define a string length 2, use the first 2 chars.
+// The string length will be at least 2.
+
+// two_char("java", 0) → "ja"
+// two_char("java", 2) → "va"
+// two_char("java", 3) → "ja"
+
+fn two_char(s: &str, index: usize) -> &str {
+    let len = s.len();
+    if index > len - 2 {
+        &s[..2]
+    } else {
+        &s[index..index+2]
+    }
+}
+
+// String-1 > atFirst
+// https://codingbat.com/prob/p139076
+
+// Given a string, return a string length 2 made of its first 2 chars.
+// If the string length is less than 2, use '@' for the missing chars.
+
+// at_first("hello") → "he"
+// at_first("hi") → "hi"
+// at_first("h") → "h@"
+
+fn at_first(s: &str) -> String {
+    s.to_string()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -649,5 +683,19 @@ mod tests {
         assert_eq!(middle_two("string"), "ri");
         assert_eq!(middle_two("code"), "od");
         assert_eq!(middle_two("Practice"), "ct");
+    }
+
+    #[test]
+    fn two_char_test() {
+        assert_eq!(two_char("java", 0), "ja");
+        assert_eq!(two_char("java", 2), "va");
+        assert_eq!(two_char("java", 3), "ja");
+    }
+
+    #[test]
+    fn at_first_test() {
+        assert_eq!(at_first("hello"), "he");
+        assert_eq!(at_first("hi"), "hi");
+        assert_eq!(at_first("h"), "h@");
     }
 }
