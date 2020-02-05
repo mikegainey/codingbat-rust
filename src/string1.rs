@@ -489,7 +489,94 @@ fn two_char(s: &str, index: usize) -> &str {
 // at_first("h") → "h@"
 
 fn at_first(s: &str) -> String {
-    s.to_string()
+    let s_len = std::cmp::min(2, s.len());
+    let at_len = 2 - s_len;
+    let ats = "@".repeat(at_len);
+    format!("{}{}", &s[..s_len], ats)
+}
+
+// String-1 > lastTwo
+// https://codingbat.com/prob/p194786
+
+// Given a string of any length, return a new string where the last 2 chars, if present, are swapped,
+// so "coding" yields "codign".
+
+// last_two("coding") → "codign"
+// last_two("cat") → "cta"
+// last_two("ab") → "ba"
+
+fn last_two(s: &str) -> String {
+    let len = s.len();
+    let s_bytes = s.as_bytes();
+    let end1 = s_bytes[len-1] as char;
+    let end2 = s_bytes[len-2] as char;
+    format!("{}{}{}", &s[..len-2], end1, end2)
+}
+
+// String-1 > minCat
+// https://codingbat.com/prob/p105745
+
+// Given two strings, append them together (known as "concatenation") and return the result.
+// However, if the strings are different lengths,
+// omit chars from the longer string so it is the same length as the shorter string.
+// So "Hello" and "Hi" yield "loHi". The strings may be any length.
+
+// min_cat("Hello", "Hi") → "loHi"
+// min_cat("Hello", "java") → "ellojava"
+// min_cat("java", "Hello") → "javaello"
+
+fn min_cat(a: &str, b: &str) -> String {
+    let (lena, lenb) = (a.len(), b.len());
+    if lena < lenb {
+        format!("{}{}", a, &b[lenb-lena..])
+    } else {
+        format!("{}{}", &a[lena-lenb..], b)
+    }
+}
+
+// String-1 > deFront
+// https://codingbat.com/prob/p110141
+
+// Given a string, return a version without the first 2 chars.
+// Except: keep the first char if it is 'a'
+// and   : keep the second char if it is 'b'.
+// The string may be any length. Harder than it looks.
+
+// de_front("Hello") → "llo"
+// de_front("java") → "va"
+// de_front("away") → "aay"
+
+fn de_front(s: &str) -> String {
+    let s_bytes = s.as_bytes();
+    let first = match s_bytes[0] {
+        b'a' => "a",
+        _ => ""
+    };
+    let second = match s_bytes[1] {
+        b'b' => "b",
+        _ => ""
+    };
+    format!("{}{}{}", first, second, &s[2..])
+}
+
+// String-1 > withoutX2
+// https://codingbat.com/prob/p151359
+
+// Given a string, if one or both of the first 2 chars is 'x',
+// return the string without those 'x' chars, and
+// otherwise return the string unchanged.
+// This is a little harder than it looks.
+
+// without_x2("xHi") → "Hi"
+// without_x2("Hxi") → "Hi"
+// without_x2("Hi") → "Hi"
+
+fn without_x2(s: &str) -> String {
+    let first2: String = s[..2].chars()
+        .filter(|c| c != &'x')
+        .collect();
+    let rest = &s[2..];
+    format!("{}{}", first2, rest)
 }
 
 #[cfg(test)]
@@ -697,5 +784,33 @@ mod tests {
         assert_eq!(at_first("hello"), "he");
         assert_eq!(at_first("hi"), "hi");
         assert_eq!(at_first("h"), "h@");
+    }
+
+    #[test]
+    fn last_two_test() {
+        assert_eq!(last_two("coding"), "codign");
+        assert_eq!(last_two("cat"), "cta");
+        assert_eq!(last_two("ab"), "ba");
+    }
+
+    #[test]
+    fn min_cat_test() {
+        assert_eq!(min_cat("Hello", "Hi"), "loHi");
+        assert_eq!(min_cat("Hello", "java"), "ellojava");
+        assert_eq!(min_cat("java", "Hello"), "javaello");
+    }
+
+    #[test]
+    fn de_front_test() {
+        assert_eq!(de_front("Hello"), "llo");
+        assert_eq!(de_front("java"), "va");
+        assert_eq!(de_front("away"), "aay");
+    }
+
+    #[test]
+    fn without_x2_test() {
+        assert_eq!(without_x2("xHi"), "Hi");
+        assert_eq!(without_x2("Hxi"), "Hi");
+        assert_eq!(without_x2("Hi"), "Hi");
     }
 }
