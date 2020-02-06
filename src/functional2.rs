@@ -47,6 +47,37 @@ fn no_yy(array: &[&str]) -> Vec<String> {
         .collect()
 }
 
+// Functional-2 > no9
+// https://codingbat.com/prob/p124510
+
+// Given a list of non-negative integers, return a list of those numbers except omitting any that end with 9.
+
+// no9([1, 2, 19]) → [1, 2]
+// no9([9, 19, 29, 3]) → [3]
+// no9([1, 2, 3]) → [1, 2, 3]
+
+fn no9(array: &[i32]) -> Vec<i32> {
+    array.iter()
+        .filter(|&x| x % 10 != 9)
+        .cloned()
+        .collect()
+}
+
+// Functional-2 > noLong
+// https://codingbat.com/prob/p194496
+
+// Given a list of strings, return a list of the strings, omitting any string length 4 or more.
+
+// no_long(["this", "not", "too", "long"]) → ["not", "too"]
+// no_long(["a", "bbb", "cccc"]) → ["a", "bbb"]
+// no_long(["cccc", "cccc", "cccc"]) → []
+
+fn no_long<'a>(array: &'a [&'a str]) -> Vec<&'a str> {
+    array.iter()
+        .filter(|s| s.len() < 4)
+        .cloned()
+        .collect()
+}
 
 #[cfg(test)]
 mod tests {
@@ -71,5 +102,19 @@ mod tests {
         assert_eq!(no_yy(&["a", "b", "c"]), ["ay", "by", "cy"]);
         assert_eq!(no_yy(&["a", "b", "cy"]), ["ay", "by"]);
         assert_eq!(no_yy(&["xx", "ya", "zz"]), ["xxy", "yay", "zzy"]);
+    }
+
+    #[test]
+    fn no9_test() {
+        assert_eq!(no9(&[1, 2, 19]), [1, 2]);
+        assert_eq!(no9(&[9, 19, 29, 3]), [3]);
+        assert_eq!(no9(&[1, 2, 3]), [1, 2, 3]);
+    }
+
+    #[test]
+    fn no_long_test() {
+        assert_eq!(no_long(&["this", "not", "too", "long"]), ["not", "too"]);
+        assert_eq!(no_long(&["a", "bbb", "cccc"]), ["a", "bbb"]);
+        // assert_eq!(no_long(&["cccc", "cccc", "cccc"]), []); // cannot infer type ??
     }
 }
