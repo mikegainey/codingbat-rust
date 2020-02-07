@@ -79,6 +79,39 @@ fn no_long<'a>(array: &'a [&'a str]) -> Vec<&'a str> {
         .collect()
 }
 
+// Functional-2 > two2
+// https://codingbat.com/prob/p148198
+
+// Given a list of non-negative integers, return a list of those numbers multiplied by 2,
+// omitting any of the resulting numbers that end in 2.
+
+// two2([1, 2, 3]) → [4, 6]
+// two2([2, 6, 11]) → [4]
+// two2([0]) → [0]
+
+fn two2(array: &[u32]) -> Vec<u32> {
+    array.iter()
+        .map(|x| x * 2)
+        .filter(|x| x % 10 != 2)
+        .collect()
+}
+
+// Functional-2 > noTeen
+// https://codingbat.com/prob/p137274
+
+// Given a list of integers, return a list of those numbers, omitting any that are between 13 and 19 inclusive.
+
+// no_teen([12, 13, 19, 20]) → [12, 20]
+// no_teen([1, 14, 1]) → [1, 1]
+// no_teen([15]) → []
+
+fn no_teen(array: &[i32]) -> Vec<i32> {
+    array.iter()
+        .filter(|&&x| x < 13 || x > 19)
+        .cloned()
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -116,5 +149,19 @@ mod tests {
         assert_eq!(no_long(&["this", "not", "too", "long"]), ["not", "too"]);
         assert_eq!(no_long(&["a", "bbb", "cccc"]), ["a", "bbb"]);
         // assert_eq!(no_long(&["cccc", "cccc", "cccc"]), []); // cannot infer type ??
+    }
+
+    #[test]
+    fn two2_test() {
+        assert_eq!(two2(&[1, 2, 3]), [4, 6]);
+        assert_eq!(two2(&[2, 6, 11]), [4]);
+        assert_eq!(two2(&[0]), [0]);
+    }
+
+    #[test]
+    fn no_teen_test() {
+        assert_eq!(no_teen(&[12, 13, 19, 20]), [12, 20]);
+        assert_eq!(no_teen(&[1, 14, 1]), [1, 1]);
+        assert_eq!(no_teen(&[15]), []);
     }
 }
