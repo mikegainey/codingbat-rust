@@ -23,7 +23,7 @@ fn no_neg(array: &[i32]) -> Vec<i32> {
 // no_z(["hziz", "hzello", "hi"]) → ["hi"]
 // no_z(["hello", "howz", "are", "youz"]) → ["hello", "are"]
 
-fn no_z<'a>(array: &'a [&'a str]) -> Vec<&'a str> { // added lifetimes until the compiler stopped complaining
+fn no_z<'a>(array: &[&'a str]) -> Vec<&'a str> { // added lifetimes until the compiler stopped complaining
     array.iter()
         .filter(|s| !s.contains("z"))
         .cloned()
@@ -72,7 +72,7 @@ fn no9(array: &[i32]) -> Vec<i32> {
 // no_long(["a", "bbb", "cccc"]) → ["a", "bbb"]
 // no_long(["cccc", "cccc", "cccc"]) → []
 
-fn no_long<'a>(array: &'a [&'a str]) -> Vec<&'a str> {
+fn no_long<'a>(array: &[&'a str]) -> Vec<&'a str> {
     array.iter()
         .filter(|s| s.len() < 4)
         .cloned()
@@ -109,6 +109,39 @@ fn no_teen(array: &[i32]) -> Vec<i32> {
     array.iter()
         .filter(|&&x| x < 13 || x > 19)
         .cloned()
+        .collect()
+}
+
+// Functional-2 > no34
+// https://codingbat.com/prob/p184496
+
+// Given a list of strings, return a list of the strings, omitting any string length 3 or 4.
+
+// no34(["a", "bb", "ccc"]) → ["a", "bb"]
+// no34(["a", "bb", "ccc", "dddd"]) → ["a", "bb"]
+// no34(["ccc", "dddd", "apple"]) → ["apple"]
+
+fn no34<'a>(array: &[&'a str]) -> Vec<&'a str> {
+    array.iter()
+        .filter(|s| s.len() != 3 && s.len() != 4)
+        .cloned() // converts items from &&str to &str
+        .collect()
+}
+
+// Functional-2 > square56
+// https://codingbat.com/prob/p132748
+
+// Given a list of integers, return a list of those numbers squared and the product added to 10,
+// omitting any of the resulting numbers that end in 5 or 6.
+
+// square56([3, 1, 4]) → [19, 11]
+// square56([1]) → [11]
+// square56([2]) → [14]
+
+fn square56(array: &[i32]) -> Vec<i32> {
+    array.iter()
+        .map(|x| x * x + 10)
+        .filter(|x| x % 10 != 5 && x % 10 != 6)
         .collect()
 }
 
@@ -163,5 +196,19 @@ mod tests {
         assert_eq!(no_teen(&[12, 13, 19, 20]), [12, 20]);
         assert_eq!(no_teen(&[1, 14, 1]), [1, 1]);
         assert_eq!(no_teen(&[15]), []);
+    }
+
+    #[test]
+    fn no34_test() {
+        assert_eq!(no34(&["a", "bb", "ccc"]), ["a", "bb"]);
+        assert_eq!(no34(&["a", "bb", "ccc", "dddd"]), ["a", "bb"]);
+        assert_eq!(no34(&["ccc", "dddd", "apple"]), ["apple"]);
+    }
+
+    #[test]
+    fn square56_test() {
+        assert_eq!(square56(&[3, 1, 4]), [19, 11]);
+        assert_eq!(square56(&[1]), [11]);
+        assert_eq!(square56(&[2]), [14]);
     }
 }
