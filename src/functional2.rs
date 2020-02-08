@@ -141,7 +141,10 @@ fn no34<'a>(array: &[&'a str]) -> Vec<&'a str> {
 fn square56(array: &[i32]) -> Vec<i32> {
     array.iter()
         .map(|x| x * x + 10)
-        .filter(|x| x % 10 != 5 && x % 10 != 6)
+        .filter(|x| match x % 10 {
+            5 | 6 => false,
+            _ => true
+        })
         .collect()
 }
 
