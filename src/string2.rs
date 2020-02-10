@@ -138,22 +138,193 @@ fn same_star_char(s: &str) -> bool {
 // star_out("ab**cd") → "ad"
 // star_out("sm*eilly") → "silly"
 
-fn star_out(s: &str) -> String {
+// with a for loop, pushing to an output variable
+fn star_out1(s: &str) -> String {
+    let mut output = String::new();
+    let len = s.len();
+
+    // if the first two chars are letters, push the first
+    if s[..2].chars().all(|c| c.is_ascii_alphabetic()) {
+        output.push(s.chars().next().unwrap());
+    }
+
+    // if a group of three chars are letters, push the middle
+    for x in 0..=len-3 {
+        let group = s[x..x+3].as_bytes();
+        if group.iter().all(|&c| (c as char).is_ascii_alphabetic()) {
+            output.push(group[1] as char);
+        }
+    }
+
+    //if the last two chars are letters, push the last
+    if s[len-2..].chars().all(|c| c.is_ascii_alphabetic()) {
+        output.push(s.chars().last().unwrap());
+    }
+
+    output
+}
+
+// with recursion
+fn star_out2(s: &str) -> String {
     if s.len() < 2 {
-        s.to_string()
+        format!("{}", s)
     } else {
         let head = &s[..2].as_bytes();
         if !head.contains(&b'*') {
-            format!("{}{}", &s[..1], star_out(&s[1..]))
+            format!("{}{}", &s[..1], star_out2(&s[1..]))
         } else if head[1] == b'*' {
-            format!("{}", star_out(&s[1..]))
+            format!("{}", star_out2(&s[1..]))
         } else if head[0] == b'*' {
-            format!("{}", star_out(&s[2..]))
+            format!("{}", star_out2(&s[2..]))
         } else {
-            format!("{}", star_out(&s[1..]))
+            format!("{}", star_out2(&s[1..]))
         }
     }
 }
+
+// String-2 > countHi
+// https://codingbat.com/prob/p147448
+
+// Return the number of times that the string "hi" appears anywhere in the given string.
+
+// count_hi("abc hi ho") → 1
+// count_hi("ABChi hi") → 2
+// count_hi("hihi") → 2
+
+fn count_hi(s: &str) -> u32 {
+    let len = s.len();
+    let mut count = 0;
+    for x in 0..=len-2 {
+        if &s[x..x+2] == "hi" {
+            count += 1;
+        }
+    }
+    count
+}
+
+// String-2 > endOther
+// https://codingbat.com/prob/p126880
+
+// Given two strings, return true if either of the strings appears at the very end of the other string,
+// ignoring upper/lower case differences (in other words, the computation should not be "case sensitive").
+
+// end_other("Hiabc", "abc") → true
+// end_other("AbC", "HiaBc") → true
+// end_other("abc", "abXabc") → true
+
+fn end_other(a: &str, b: &str) -> bool {
+    let (a_len, b_len) = (a.len(), b.len());
+    let min_len = std::cmp::min(a_len, b_len);
+    a[a_len - min_len ..].to_lowercase() == b[b_len - min_len ..].to_lowercase()
+}
+
+// String-2 > xyBalance
+// https://codingbat.com/prob/p134250
+
+// We'll say that a String is xy-balanced if for all the 'x' chars in the string,
+// there exists a 'y' char somewhere later in the string. So "xxy" is balanced, but "xyx" is not.
+// One 'y' can balance multiple 'x's. Return true if the given string is xy-balanced.
+
+// xy_balance("aaxbby") → true
+// xy_balance("aaxbb") → false
+// xy_balance("yaaxbb") → false
+
+fn xy_balance(s: &str) -> bool {
+    for c in s.chars().rev() {
+        if c == 'y' {
+            return true;
+        } else if c == 'x' {
+            return false;
+        }
+    }
+    true // if there are no x's or y's, consider the string balanced
+}
+
+// String-2 > repeatFront
+// https://codingbat.com/prob/p128796
+
+// Given a string and an int n, return a string made of the first n characters of the string,
+// followed by the first n-1 characters of the string, and so on.
+// You may assume that n is between 0 and the length of the string, inclusive (i.e. n >= 0 and n <= str.length()).
+
+// repeat_front("Chocolate", 4) → "ChocChoChC"
+// repeat_front("Chocolate", 3) → "ChoChC"
+// repeat_front("Ice Cream", 2) → "IcI"
+
+fn repeat_front1(s: &str, n: usize) -> String {
+    let mut output = String::new();
+    for len in (1..=n).rev() {
+        output.push_str(&s[..len]);
+    }
+    output
+}
+
+// String-2 > xyzMiddle
+// https://codingbat.com/prob/p159772
+
+// Given a string, does "xyz" appear in the middle of the string?
+// To define middle, we'll say that the number of chars to the left and right of the "xyz" must differ by at most one.
+// This problem is harder than it looks.
+
+// xyz_middle("AAxyzBB") → true
+// xyz_middle("AxyzBB") → true
+// xyz_middle("AxyzBBB") → false
+
+fn xyz_middle(s: &str) -> bool {
+    let len = s.len();
+    let mid = len / 2;
+    if len % 2 == 1 {
+        &s[mid-1..mid+2] == "xyz"
+    } else {
+        &s[mid-2..mid+1] == "xyz" || &s[mid-1..mid+2] == "xyz"
+    }
+}
+
+// String-2 > oneTwo
+// https://codingbat.com/prob/p122943
+
+// Given a string, compute a new string by moving the first char to come after the next two chars,
+// so "abc" yields "bca". Repeat this process for each subsequent group of 3 chars, so "abcdef" yields "bcaefd".
+// Ignore any group of fewer than 3 chars at the end.
+
+// one_two("abc") → "bca"
+// one_two("tca") → "cat"
+// one_two("tcagdo") → "catdog"
+
+fn one_two(s: &str) -> String {
+    if s.len() < 3 {
+        "".to_string()
+    } else {
+        let abc = s[..3].as_bytes();
+        let bca = [abc[1], abc[2], abc[0]];
+        format!("{}{}", std::str::from_utf8(&bca).unwrap(), one_two(&s[3..]))
+    }
+}
+
+// String-2 > plusOut
+// https://codingbat.com/prob/p170829
+
+// Given a string and a non-empty word string, return a version of the original String
+// where all chars have been replaced by pluses ("+"),
+// except for appearances of the word string which are preserved unchanged.
+
+// plus_out("12xy34", "xy") → "++xy++"
+// plus_out("12xy34", "1") → "1+++++"
+// plus_out("12xy34xyabcxy", "xy") → "++xy++xy+++xy"
+
+fn plus_out(s: &str, word: &str) -> String {
+    let (slen, wlen) = (s.len(), word.len());
+    if slen < wlen {
+        "+".repeat(slen)
+    } else {
+        if &s[..wlen] == word {
+            format!("{}{}", &s[..wlen], plus_out(&s[wlen..], word))
+        } else {
+            format!("{}{}", "+", plus_out(&s[1..], word))
+        }
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -209,9 +380,65 @@ mod tests {
     }
 
     #[test]
-    fn star_out_test() {
-        assert_eq!(star_out("ab*cd"), "ad");
-        assert_eq!(star_out("ab**cd"), "ad");
-        assert_eq!(star_out("sm*eilly"), "silly");
+    fn star_out1_test() {
+        assert_eq!(star_out1("ab*cd"), "ad");
+        assert_eq!(star_out1("ab**cd"), "ad");
+        assert_eq!(star_out1("sm*eilly"), "silly");
+    }
+
+    #[test]
+    fn star_out2_test() {
+        assert_eq!(star_out2("ab*cd"), "ad");
+        assert_eq!(star_out2("ab**cd"), "ad");
+        assert_eq!(star_out2("sm*eilly"), "silly");
+    }
+
+    #[test]
+    fn count_hi_test() {
+        assert_eq!(count_hi("abc hi ho"), 1);
+        assert_eq!(count_hi("ABChi hi"), 2);
+        assert_eq!(count_hi("hihi"), 2);
+    }
+
+    #[test]
+    fn end_other_test() {
+        assert_eq!(end_other("Hiabc", "abc"), true);
+        assert_eq!(end_other("AbC", "HiaBc"), true);
+        assert_eq!(end_other("abc", "abXabc"), true);
+    }
+
+    #[test]
+    fn xy_balance_test() {
+        assert_eq!(xy_balance("aaxbby"), true);
+        assert_eq!(xy_balance("aaxbb"), false);
+        assert_eq!(xy_balance("yaaxbb"), false);
+    }
+
+    #[test]
+    fn repeat_front1_test() {
+        assert_eq!(repeat_front1("Chocolate", 4), "ChocChoChC");
+        assert_eq!(repeat_front1("Chocolate", 3), "ChoChC");
+        assert_eq!(repeat_front1("Ice Cream", 2), "IcI");
+    }
+
+    #[test]
+    fn xyz_middle_test() {
+        assert_eq!(xyz_middle("AAxyzBB"), true);
+        assert_eq!(xyz_middle("AxyzBB"), true);
+        assert_eq!(xyz_middle("AxyzBBB"), false);
+    }
+
+    #[test]
+    fn one_two_test() {
+        assert_eq!(one_two("abc"), "bca");
+        assert_eq!(one_two("tca"), "cat");
+        assert_eq!(one_two("tcagdo"), "catdog");
+    }
+
+    #[test]
+    fn plus_out_test() {
+        assert_eq!(plus_out("12xy34", "xy"), "++xy++");
+        assert_eq!(plus_out("12xy34", "1"), "1+++++");
+        assert_eq!(plus_out("12xy34xyabcxy", "xy"), "++xy++xy+++xy");
     }
 }
