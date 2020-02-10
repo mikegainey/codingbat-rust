@@ -37,8 +37,7 @@ fn count_code1(s: &str) -> u32 {
 }
 
 fn count_code2(s: &str) -> u32 {
-    use regex::Regex;
-    let re = Regex::new(r"^co.e").unwrap();
+    let re = regex::Regex::new(r"^co.e").unwrap();
 
     let mut count = 0;
     for x in 0..=s.len()-4 {
@@ -59,8 +58,7 @@ fn count_code2(s: &str) -> u32 {
 // bob_there("bac") → false
 
 fn bob_there(s: &str) -> bool {
-    use regex::Regex;
-    let re = Regex::new(r"^b.b").unwrap();
+    let re = regex::Regex::new(r"^b.b").unwrap();
 
     for x in 0..=s.len()-3 {
         if re.is_match(&s[x..x+3]) {
@@ -325,6 +323,208 @@ fn plus_out(s: &str, word: &str) -> String {
     }
 }
 
+// String-2 > catDog
+// https://codingbat.com/prob/p111624
+
+// Return true if the string "cat" and "dog" appear the same number of times in the given string.
+
+// cat_dog("catdog") → true
+// cat_dog("catcat") → false
+// cat_dog("1cat1cadodog") → true
+
+fn cat_dog(s: &str) -> bool {
+
+    fn helper(s: &str, cats: u32, dogs: u32) -> bool {
+        if s.len() < 3 {
+            cats == dogs
+        } else {
+            if &s[..3] == "cat" {
+                helper(&s[3..], cats+1, dogs)
+            } else if &s[..3] == "dog" {
+                helper(&s[3..], cats, dogs+1)
+            } else {
+                helper(&s[1..], cats, dogs)
+            }
+        }
+    }
+    helper(&s, 0, 0)
+}
+
+// String-2 > xyzThere
+// https://codingbat.com/prob/p136594
+
+// Return true if the given string contains an appearance of "xyz" where the xyz is not directly preceeded by a period (.).
+// So "xxyz" counts but "x.xyz" does not.
+
+// xyz_there("abcxyz") → true
+// xyz_there("abc.xyz") → false
+// xyz_there("xyz.abc") → true
+
+fn xyz_there(s: &str) -> bool {
+    let re = regex::Regex::new(r"[^.]xyz").unwrap(); // see https://regexr.com/ for cheatsheet
+
+    if &s[..3] == "xyz" {
+        return true;
+    }
+    for x in 0..=s.len()-4 {
+        if re.is_match(&s[x..x+4]) {
+            return true;
+        }
+    }
+    false
+}
+
+// String-2 > mixString
+// https://codingbat.com/prob/p125185
+
+// Given two strings, a and b, create a bigger string made of the first char of a, the first char of b,
+// the second char of a, the second char of b, and so on. Any leftover chars go at the end of the result.
+
+// mix_string("abc", "xyz") → "axbycz"
+// mix_string("Hi", "There") → "HTihere"
+// mix_string("xxxx", "There") → "xTxhxexre"
+
+fn mix_string(a: &str, b: &str) -> String {
+    if a.len() == 0 {
+        b.to_string()
+    } else if b.len() == 0 {
+        a.to_string()
+    } else {
+        format!("{}{}{}", &a[..1], &b[..1], mix_string(&a[1..], &b[1..]))
+    }
+}
+
+// String-2 > repeatSeparator
+// https://codingbat.com/prob/p109637
+
+// Given two strings, word and a separator sep,
+// return a big string made of count occurrences of the word, separated by the separator string.
+
+// repeat_separator("Word", "X", 3) → "WordXWordXWord"
+// repeat_separator("This", "And", 2) → "ThisAndThis"
+// repeat_separator("This", "And", 1) → "This"
+
+fn repeat_separator(word: &str, sep: &str, count: u32) -> String {
+    let mut output = String::new();
+    for _ in 0..count-1 {
+        output.push_str(word);
+        output.push_str(sep);
+    }
+    output.push_str(word);
+    output
+}
+
+// String-2 > getSandwich
+// https://codingbat.com/prob/p129952
+
+// A sandwich is two pieces of bread with something in between.
+// Return the string that is between the first and last appearance of "bread" in the given string,
+// or return the empty string "" if there are not two pieces of bread.
+
+// get_sandwich("breadjambread") → "jam"
+// get_sandwich("xxbreadjambreadyy") → "jam"
+// get_sandwich("xxbreadyy") → ""
+
+fn get_sandwich(s: &str) -> String {
+    let mut foundx = Vec::new(); // indexes of "bread" substrings
+    for x in 0..=s.len()-5 {
+        if &s[x..x+5] == "bread" {
+            foundx.push(x);
+        }
+    }
+    // check to ensure there are at least two instances of the substring "bread"
+    if foundx.len() < 2 {
+        return "".to_string()
+    }
+    let firstx = foundx[0] + 5;            // the first char of the target text
+    let lastx = foundx.pop().unwrap() - 1; // the last char of the target text
+    s[firstx..=lastx].to_string()
+}
+
+// String-2 > zipZap
+// https://codingbat.com/prob/p180759
+
+// Look for patterns like "zip" and "zap" in the string -- length-3, starting with 'z' and ending with 'p'.
+// Return a string where for all such words, the middle letter is gone, so "zipXzap" yields "zpXzp".
+
+// zip_zap("zipXzap") → "zpXzp"
+// zip_zap("zopzop") → "zpzp"
+// zip_zap("zzzopzop") → "zzzpzp"
+
+fn zip_zap(s: &str) -> String {
+    let re = regex::Regex::new(r"z.p").unwrap();
+    if s.len() < 3 {
+        s.to_string()
+    } else {
+        if re.is_match(&s[..3]) {
+            format!("{}{}", "zp", zip_zap(&s[3..]))
+        } else {
+            format!("{}{}", &s[..1], zip_zap(&s[1..]))
+        }
+    }
+}
+
+// String-2 > wordEnds
+// https://codingbat.com/prob/p147538
+
+// Given a string and a non-empty word string,
+// return a string made of each char just before and just after every appearance of the word in the string.
+// Ignore cases where there is no char before or after the word,
+// and a char may be included twice if it is between two words.
+
+// word_ends("abcXY123XYijk", "XY") → "c13i"
+// word_ends("XY123XY", "XY") → "13"
+// word_ends("XY1XY", "XY") → "11"
+
+// this works, but it's a mess
+fn word_ends1(s: &str, word: &str) -> String {
+    let (slen, wlen) = (s.len(), word.len());
+    let sbytes = s.as_bytes();
+    let mut previous = None;
+    let mut output = String::new();
+    for x in 0..=(slen - wlen) {
+        // if word is found
+        if &s[x..x+wlen] == word {
+            // if there is a previous character
+            if let Some(c) = previous {
+                output.push(c);
+            }
+            // if there is a character after word
+            if x + wlen < slen {
+                output.push(sbytes[(x + wlen)] as char);
+            }
+        }
+        previous = Some(sbytes[x] as char);
+    }
+    output
+}
+
+// word_ends("abcXY123XYijk", "XY") → "c13i"
+// word_ends("XY123XY", "XY") → "13"
+// word_ends("XY1XY", "XY") → "11"
+
+// the form is nicer, but the index arithmetic is messy
+fn word_ends2(s: &str, word: &str) -> String {
+    let (slen, wlen) = (s.len(), word.len());
+    let sbytes = s.as_bytes();
+    let mut output = String::new();
+    // check the left end
+    if &s[..wlen] == word {
+        output.push(sbytes[wlen] as char);
+    }
+    // check the middle
+    for x in 0..=slen-(wlen+2) {
+        if &s[x+1..x+1+wlen] == word {
+            output.push(sbytes[x] as char);
+            output.push(sbytes[x+1+wlen] as char);
+        }
+    }
+    // check the right end
+    if &s[slen-wlen..] == word {
+        output.push(sbytes[slen-wlen-1] as char);
+    }
+    output
+}
 
 #[cfg(test)]
 mod tests {
@@ -440,5 +640,67 @@ mod tests {
         assert_eq!(plus_out("12xy34", "xy"), "++xy++");
         assert_eq!(plus_out("12xy34", "1"), "1+++++");
         assert_eq!(plus_out("12xy34xyabcxy", "xy"), "++xy++xy+++xy");
+    }
+
+    #[test]
+    fn cat_dog_test() {
+        assert_eq!(cat_dog("catdog"), true);
+        assert_eq!(cat_dog("catcat"), false);
+        assert_eq!(cat_dog("1cat1cadodog"), true);
+    }
+
+    #[test]
+    fn xyz_there_test() {
+        assert_eq!(xyz_there("abcxyz"), true);
+        assert_eq!(xyz_there("abc.xyz"), false);
+        assert_eq!(xyz_there("xyz.abc"), true);
+    }
+
+    #[test]
+    fn mix_string_test() {
+        assert_eq!(mix_string("abc", "xyz"), "axbycz");
+        assert_eq!(mix_string("Hi", "There"), "HTihere");
+        assert_eq!(mix_string("xxxx", "There"), "xTxhxexre");
+    }
+
+    #[test]
+    fn repeat_separator_test() {
+        assert_eq!(repeat_separator("Word", "X", 3), "WordXWordXWord");
+        assert_eq!(repeat_separator("This", "And", 2), "ThisAndThis");
+        assert_eq!(repeat_separator("This", "And", 1), "This");
+    }
+
+    #[test]
+    fn get_sandwich_test() {
+        assert_eq!(get_sandwich("breadjambread"), "jam");
+        assert_eq!(get_sandwich("xxbreadjambreadyy"), "jam");
+        assert_eq!(get_sandwich("xxbreadyy"), "");
+    }
+
+    #[test]
+    fn zip_zap_test() {
+        assert_eq!(zip_zap("zipXzap"), "zpXzp");
+        assert_eq!(zip_zap("zopzop"), "zpzp");
+        assert_eq!(zip_zap("zzzopzop"), "zzzpzp");
+    }
+
+    #[test]
+    fn word_ends1_test() {
+        assert_eq!(word_ends1("abcXY123XYijk", "XY"), "c13i");
+        assert_eq!(word_ends1("XY123XY", "XY"), "13");
+        assert_eq!(word_ends1("XY1XY", "XY"), "11");
+        assert_eq!(word_ends1("abcXYZ123XYZijk", "XYZ"), "c13i");
+        assert_eq!(word_ends1("XYZ123XYZ", "XYZ"), "13");
+        assert_eq!(word_ends1("XYZ1XYZ", "XYZ"), "11");
+    }
+
+    #[test]
+    fn word_ends2_test() {
+        assert_eq!(word_ends2("abcXY123XYijk", "XY"), "c13i");
+        assert_eq!(word_ends2("XY123XY", "XY"), "13");
+        assert_eq!(word_ends2("XY1XY", "XY"), "11");
+        assert_eq!(word_ends2("abcXYZ123XYZijk", "XYZ"), "c13i");
+        assert_eq!(word_ends2("XYZ123XYZ", "XYZ"), "13");
+        assert_eq!(word_ends2("XYZ1XYZ", "XYZ"), "11");
     }
 }
