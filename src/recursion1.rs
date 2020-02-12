@@ -638,20 +638,43 @@ fn string_clean(s: &str) -> String {
 // nest_paren("(((x))") → false
 
 fn nest_paren(s: &str) -> bool {
-    let len = s.len();
-    if len <= 2 {
-        if s == "{}" {
-            true
-        } else {
-            false
-        }
+    let slen = s.len();
+    if slen == 0 {
+        true
     } else {
         let first = s.chars().next().unwrap();
         let last = s.chars().last().unwrap();
         if first == '(' && last == ')' {
-            nest_paren(&s[1..len-1])
+            nest_paren(&s[1..slen-1])
         } else {
             false
+        }
+    }
+}
+
+// Recursion-1 > strDist
+// https://codingbat.com/prob/p195413
+
+// Given a string and a non-empty substring sub,
+// compute recursively the largest substring which starts and ends with sub and return its length.
+
+// str_dist("catcowcat", "cat") → 9
+// str_dist("catcowcat", "cow") → 3
+// str_dist("cccatcowcatxx", "cat") → 9
+
+fn str_dist(s: &str, sub: &str) -> usize {
+    let (slen, sublen) = (s.len(), sub.len());
+    if &s[..sublen] == sub && &s[slen-sublen..] == sub {
+        slen
+    } else {
+        if &s[..sublen] != sub && &s[slen-sublen..] != sub {
+            str_dist(&s[1..slen-1], sub)
+        } else if &s[..sublen] != sub {
+            str_dist(&s[1..slen], sub)
+        } else if &s[slen-sublen..] != sub {
+            str_dist(&s[..slen-1], sub)
+        } else {
+            panic!("The if-else if block didn't catch all cases.")
         }
     }
 }
@@ -862,5 +885,12 @@ mod tests {
         assert_eq!(nest_paren("(())"), true);
         assert_eq!(nest_paren("((()))"), true);
         assert_eq!(nest_paren("(((x))"), false);
+    }
+
+    #[test]
+    fn str_dist_test() {
+        assert_eq!(str_dist("catcowcat", "cat"), 9);
+        assert_eq!(str_dist("catcowcat", "cow"), 3);
+        assert_eq!(str_dist("cccatcowcatxx", "cat"), 9);
     }
 }
