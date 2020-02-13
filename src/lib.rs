@@ -6,6 +6,7 @@ mod logic1;
 mod logic2;
 mod array1;
 mod array2;
+mod array3;
 mod string1;
 mod string2;
 mod functional1;
