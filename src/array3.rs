@@ -163,9 +163,14 @@ fn linear_in(outer: &[i32], inner: &[i32]) -> bool {
 // max_mirror([1, 2, 1, 4]) → 3
 // max_mirror([7, 1, 2, 9, 7, 2, 1]) → 2
 
-fn max_mirror(a: &[u32]) -> u32 {
-    a[0]
-}
+// fn max_mirror(a: &[u32]) -> u32 {
+//     let alen = a.len();
+//     for length in 2..=alen {
+//         for leftx in 0..=alen-length {
+//             asdf
+//         }
+//     }
+// }
 
 #[cfg(test)]
 mod tests {
