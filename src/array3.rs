@@ -163,14 +163,125 @@ fn linear_in(outer: &[i32], inner: &[i32]) -> bool {
 // max_mirror([1, 2, 1, 4]) → 3
 // max_mirror([7, 1, 2, 9, 7, 2, 1]) → 2
 
-// fn max_mirror(a: &[u32]) -> u32 {
-//     let alen = a.len();
-//     for length in 2..=alen {
-//         for leftx in 0..=alen-length {
-//             asdf
-//         }
-//     }
-// }
+fn max_mirror(a: &[u32]) -> u32 {
+
+    fn search(a: &[u32], sub: &[u32]) -> bool {
+        let (alen, sublen) = (a.len(), sub.len());
+        for index in 0..=alen-sublen {
+            if &a[index..index+sublen] == sub {
+                return true;
+            }
+        }
+        false
+    }
+
+    let alen = a.len();
+    for length in (2..=alen).rev() {
+        for leftx in 0..=alen-length {
+            let reverse: Vec<u32> = a[leftx..leftx+length].iter().rev().cloned().collect();
+            if search(a, &reverse) {
+                return length as u32;
+            }
+        }
+    }
+    1 // this happens when there is no other match
+}
+
+// Array-3 > fix45
+// https://codingbat.com/prob/p125819
+
+// (This is a slightly harder version of the fix34 problem.)
+// Return an array that contains exactly the same numbers as the given array,
+// but rearranged so that every 4 is immediately followed by a 5.
+// Do not move the 4's, but every other number may move.
+// The array contains the same number of 4's and 5's, and every 4 has a number after it that is not a 4.
+// In this version, 5's may appear anywhere in the original array.
+
+// fix45([5, 4, 9, 4, 9, 5]) → [9, 4, 5, 4, 5, 9]
+// fix45([1, 4, 1, 5]) → [1, 4, 5, 1]
+// fix45([1, 4, 1, 5, 5, 4, 1]) → [1, 4, 5, 1, 1, 4, 5]
+
+fn fix45(a: &[i32]) -> Vec<i32> {
+    let mut avec = a.to_vec();
+    let mut misplaced_5 = None; // index of a misplaced 5
+    let mut ready2swap = None;  // the index of an element to swap with a 5
+    for index in 0..avec.len() {
+        if avec[index] == 5 {        // every 5 in the input is out of place
+            misplaced_5 = Some(index);
+        } else if avec[index] != 4 { // every element not 4 or 5 is ready to swap
+            ready2swap = Some(index);
+        }
+        if misplaced_5 != None && ready2swap != None {
+            // swap
+            avec[misplaced_5.unwrap()] = avec[ready2swap.unwrap()];
+            avec[ready2swap.unwrap()] = 5;
+            misplaced_5 = None;
+            ready2swap = None;
+        }
+    }
+    avec
+}
+
+// Array-3 > squareUp
+// https://codingbat.com/prob/p155405
+
+// Given n>=0, create an array length n*n with the following pattern,
+// shown here for n=3 : {0, 0, 1,    0, 2, 1,    3, 2, 1} (spaces added to show the 3 groups).
+
+// square_up(3) → [0, 0, 1, 0, 2, 1, 3, 2, 1]
+// square_up(2) → [0, 1, 2, 1]
+// square_up(4) → [0, 0, 0, 1, 0, 0, 2, 1, 0, 3, 2, 1, 4, 3, 2, 1]
+
+fn square_up(n: usize) -> Vec<usize> {
+    let mut output = Vec::new();
+    for group_number in 0..n {
+        let mut group = vec![0; n];
+        for index in 0..n {
+            if index <= group_number {
+                group[(n-1) - index] = index + 1;
+            } else {
+                group[(n-1) - index] = 0;
+            }
+        }
+        output.append(&mut group);
+    }
+    output
+}
+
+// Array-3 > countClumps
+// https://codingbat.com/prob/p193817
+
+// Say that a "clump" in an array is a series of 2 or more adjacent elements of the same value.
+// Return the number of clumps in the given array.
+
+// count_clumps([1, 2, 2, 3, 4, 4]) → 2
+// count_clumps([1, 1, 2, 1, 1]) → 2
+// count_clumps([1, 1, 1, 1, 1]) → 1
+
+fn count_clumps(array: &[u32]) -> u32 {
+    let mut clumps = 0;
+    let mut previous: Option<u32> = None;
+    let mut repeat_counter = 1;
+    for &element in array.iter() {
+        match previous {
+            None => previous = Some(element),
+            Some(p) => {
+                if element == p {
+                    // the element is the same as previous
+                    repeat_counter += 1;
+                } else {
+                    // the element is different than previous
+                    repeat_counter = 1;
+                    previous = Some(element);
+                }
+            }
+        }
+        if repeat_counter == 2 {
+            clumps += 1;
+        }
+    }
+    clumps
+}
 
 #[cfg(test)]
 mod tests {
@@ -217,5 +328,28 @@ mod tests {
         assert_eq!(max_mirror(&[1, 2, 3, 8, 9, 3, 2, 1]), 3);
         assert_eq!(max_mirror(&[1, 2, 1, 4]), 3);
         assert_eq!(max_mirror(&[7, 1, 2, 9, 7, 2, 1]), 2);
+        assert_eq!(max_mirror(&[1, 2, 3, 2, 1]), 5);
+        assert_eq!(max_mirror(&[1, 2, 3]), 1);
+    }
+
+    #[test]
+    fn fix45_test() {
+        assert_eq!(fix45(&[5, 4, 9, 4, 9, 5]), [9, 4, 5, 4, 5, 9]);
+        assert_eq!(fix45(&[1, 4, 1, 5]), [1, 4, 5, 1]);
+        assert_eq!(fix45(&[1, 4, 1, 5, 5, 4, 1]), [1, 4, 5, 1, 1, 4, 5]);
+    }
+
+    #[test]
+    fn square_up_test() {
+        assert_eq!(square_up(3), [0, 0, 1, 0, 2, 1, 3, 2, 1]);
+        assert_eq!(square_up(2), [0, 1, 2, 1]);
+        assert_eq!(square_up(4), [0, 0, 0, 1, 0, 0, 2, 1, 0, 3, 2, 1, 4, 3, 2, 1]);
+    }
+
+    #[test]
+    fn count_clumps_test() {
+        assert_eq!(count_clumps(&[1, 2, 2, 3, 4, 4]), 2);
+        assert_eq!(count_clumps(&[1, 1, 2, 1, 1]), 2);
+        assert_eq!(count_clumps(&[1, 1, 1, 1, 1]), 1);
     }
 }
