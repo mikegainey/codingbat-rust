@@ -31,21 +31,26 @@ fn count_yz(s: &str) -> usize {
 // fails on a lone g at the end
 
 fn g_happy(s: &str) -> bool {
-    let mut count = 0;
+    let mut g_count = 0;
     for c in s.chars() {
         if c == 'g' {
-            // count consecutive 'g's
-            count += 1;
+            // g_count consecutive 'g's
+            g_count += 1;
         } else {
-            // check if non-g's follow a lone g
-            if count == 1 {
+            // check if a non-g follows a lone g (unhappy)
+            if g_count == 1 {
                 return false;
             } else {
-                count = 0;
+                g_count = 0;
             }
         }
     }
-    true
+    // check for a lone g at the end
+    if g_count == 1 {
+        false
+    } else {
+        true
+    }
 }
 
 #[cfg(test)]
