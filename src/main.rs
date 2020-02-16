@@ -4,6 +4,5 @@
 #![allow(unused_imports)]
 
 fn main() {
-    println!("{}", ("banana", 3) < ("banana", 4));
 }
 
