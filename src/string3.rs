@@ -275,7 +275,25 @@ fn sum_digits(s: &str) -> u32 {
 // max_block("") → 0
 
 fn max_block(s: &str) -> u32 {
-    s.len() as u32
+    let mut previous_char = None;
+    let mut count = 0;
+    let mut max_count = 0;
+    for c in s.chars() {
+        match previous_char {
+            Some(p) => if c == p {
+                count += 1;
+                if count > max_count {
+                    max_count = count;
+                }
+            } else {
+                // previous_char exists, but doesn't match
+                count = 1;
+                previous_char = Some(c);
+            },
+            None => previous_char = Some(c)
+        }
+    }
+    max_count
 }
 
 #[cfg(test)]

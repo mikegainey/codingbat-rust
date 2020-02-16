@@ -4,8 +4,6 @@
 #![allow(unused_imports)]
 
 fn main() {
-    let s = "michael";
-    for chunk in s.as_bytes().chunks(2) {
-        println!("{:?}", chunk);
-    }
+    println!("{}", ("banana", 3) < ("banana", 4));
 }
+

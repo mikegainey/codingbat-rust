@@ -9,8 +9,9 @@
 // mod array3;
 // mod string1;
 // mod string2;
-mod string3;
+// mod string3;
 // mod functional1;
 // mod functional2;
 // mod recursion1;
+mod ap1;
 // mod map1;
