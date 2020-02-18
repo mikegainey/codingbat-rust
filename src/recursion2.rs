@@ -199,6 +199,57 @@ fn split53(array: &[i32]) -> bool {
     helper(array, &[], &[])
 }
 
+// Recursion-2 > groupNoAdj
+// https://codingbat.com/prob/p169605
+
+// Given an array of ints, is it possible to choose a group of some of the ints,
+// such that the group sums to the given target with this additional constraint:
+// If a value in the array is chosen to be in the group,
+// the value immediately following it in the array must not be chosen. (No loops needed.)
+
+// group_no_adj(0, [2, 5, 10, 4], 12) → true
+// group_no_adj(0, [2, 5, 10, 4], 14) → false
+// group_no_adj(0, [2, 5, 10, 4], 7) → false
+
+fn group_no_adj(start: usize, array: &[i32], target: i32) -> bool {
+    if start >= array.len() {
+        target == 0
+    } else {
+        group_no_adj(start+2, array, target - array[start]) || group_no_adj(start+1, array, target)
+    }
+}
+
+// Recursion-2 > splitArray
+// https://codingbat.com/prob/p185204
+
+// Given an array of ints,
+// is it possible to divide the ints into two groups, so that the sums of the two groups are the same.
+// Every int must be in one group or the other.
+
+// split_array([2, 2]) → true
+// split_array([2, 3]) → false
+// split_array([5, 2, 3]) → true
+
+fn split_array(array: &[i32]) -> bool {
+
+    fn helper(array: &[i32], left: &[i32], right: &[i32]) -> bool {
+        if array.len() == 0 {
+            left.iter().sum::<i32>() == right.iter().sum::<i32>()
+        } else {
+            let head = array.iter().next().unwrap().clone();
+
+            let mut nextleft = left.to_vec();
+            nextleft.push(head);
+
+            let mut nextright = right.to_vec();
+            nextright.push(head);
+
+            helper(&array[1..], &nextleft, right) || helper(&array[1..], left, &nextright)
+        }
+    }
+    helper(array, &[], &[])
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -246,5 +297,19 @@ mod tests {
         assert_eq!(split53(&[1, 1]), true);
         assert_eq!(split53(&[1, 1, 1]), false);
         assert_eq!(split53(&[2, 4, 2]), true);
+    }
+
+    #[test]
+    fn group_no_adj_test() {
+        assert_eq!(group_no_adj(0, &[2, 5, 10, 4], 12), true);
+        assert_eq!(group_no_adj(0, &[2, 5, 10, 4], 14), false);
+        assert_eq!(group_no_adj(0, &[2, 5, 10, 4], 7), false);
+    }
+
+    #[test]
+    fn split_array_test() {
+        assert_eq!(split_array(&[2, 2]), true);
+        assert_eq!(split_array(&[2, 3]), false);
+        assert_eq!(split_array(&[5, 2, 3]), true);
     }
 }
